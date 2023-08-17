@@ -6,7 +6,7 @@ const Controller = require("../Controller");
 const { StatusCodes: httpStatus } = require("http-status-codes");
 const { hashString, persionDateGenerator } = require("../../../Utills/Public_Function");
 const bcrypt = require("bcrypt");
-const { signAccessToken } = require("../../../Utills/Token");
+const { signAccessToken, verifyRefreshToken, signRefreshToken } = require("../../../Utills/Token");
 
 class Auth_UserProfile_Controller extends Controller{
     async register(req, res, next){
@@ -40,10 +40,30 @@ class Auth_UserProfile_Controller extends Controller{
             const confirmPassword = bcrypt.compareSync(password, getPassword.password);
             if(!confirmPassword) throw new createHttpError.BadRequest("درخواست نا معتبر، شماره موبایل یا رمز عبور را درست وارد کنید");
             const accessToken = await signAccessToken(user._id);
+            const refReshToken = await signRefreshToken(user._id);
             return res.status(httpStatus.OK).json({
                 statusCode: httpStatus.OK,
                 data: {
-                    accessToken
+                    accessToken,
+                    refReshToken
+                }
+            });
+        } catch (error) {
+            next(error)
+        }
+    }
+    async refreshToken(req, res, next){
+        try {
+            const { refreshToken } = req.body;
+            const mobile = await verifyRefreshToken(refreshToken);
+            const user = await UserModel.findOne({mobile});
+            const accessToken = await signAccessToken(user._id);
+            const newRefreshToken = await signRefreshToken(user._id);
+            return res.status(httpStatus.OK).json({
+                statusCode: httpStatus.OK,
+                data: {
+                    accessToken,
+                    refreshToken: newRefreshToken
                 }
             })
         } catch (error) {
