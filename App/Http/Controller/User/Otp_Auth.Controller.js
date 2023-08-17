@@ -8,7 +8,6 @@ const { UserModel } = require("../../../Models/User.Model");
 const { ROLES } = require("../../../Utills/Constants");
 const { smsClient } = require("../../../Utills/Sms.Panel");
 const { signAccessToken, signRefreshToken, verifyRefreshToken } = require("../../../Utills/Token");
-
 class OtpAuthenticationController extends Controller{
     async otp_Register(req, res, next){
         try {
@@ -100,7 +99,7 @@ class OtpAuthenticationController extends Controller{
         } catch (error) {
             next(error)
         }
-    }
+    };
 };
 
 module.exports = {

@@ -7,6 +7,7 @@ const { StatusCodes: httpStatus } = require("http-status-codes");
 const { hashString, persionDateGenerator } = require("../../../Utills/Public_Function");
 const bcrypt = require("bcrypt");
 const { signAccessToken, verifyRefreshToken, signRefreshToken } = require("../../../Utills/Token");
+const { ROLES } = require("../../../Utills/Constants");
 
 class Auth_UserProfile_Controller extends Controller{
     async register(req, res, next){
@@ -14,7 +15,7 @@ class Auth_UserProfile_Controller extends Controller{
             const requestBody = await registerSchema.validateAsync(req.body);
             const { firstname, lastname, mobile, email, password } = requestBody;
             await this.checkExistUser(mobile);
-            const user = await UserModel.create({firstname, lastname, mobile, email})
+            const user = await UserModel.create({firstname, lastname, mobile, email, role: ROLES.BUYER})
             if(!user) throw new createHttpError.InternalServerError("خطای سروری");
             const hashPassword = hashString(password);
             const now = persionDateGenerator();
