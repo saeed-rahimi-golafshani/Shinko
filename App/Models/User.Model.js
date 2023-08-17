@@ -4,11 +4,11 @@ const UserSchema = new mongoose.Schema({
     firstname: {type: String},
     lastname: {type: String},
     username: {type: String},
-    mobile: {type: String, required: true, },
+    mobile: {type: String, required: true},
     email: {type: String, lowercase: true},
     birthday: {type: String},
     role: {type: String, default: "USER"},
-    active: {type: Boolean, default: false},
+    active: {type: Boolean, default: true},
 }, {
     timestamps: true,
     toJSON: {virtuals: true}

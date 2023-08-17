@@ -5,6 +5,7 @@ const http = require("http");
 const swaggerJSDoc = require("swagger-jsdoc");
 const swaggerUI = require("swagger-ui-express");
 const createHttpError = require("http-errors");
+const { AllRoutes } = require("./Routers/Router");
 
 module.exports = class Application{
     #app = express();
@@ -66,7 +67,7 @@ module.exports = class Application{
         })
     }
     createRoute(){
-
+        this.#app.use(AllRoutes)
     }
     errorHandler(){
         this.#app.use((req, res, next) =>{
