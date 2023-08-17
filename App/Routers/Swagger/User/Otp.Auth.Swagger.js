@@ -2,40 +2,28 @@
  * @swagger 
  *  components:
  *      schemas:
- *          Register: 
+ *          Otp_Register: 
  *              type: object
  *              required: 
  *                  -   mobile
- *              properties: 
- *                  firstname: 
- *                      type: string
- *                      description: the user firstname for signUp/signIn
- *                  lastname: 
- *                      type: string
- *                      description: the user lastname for signUp/signIn
+ *              properties:
  *                  mobile: 
  *                      type: string
  *                      description: the user mobile for signUp/signIn
- *                  email: 
- *                      type: string
- *                      description: the user email for signUp/signIn
- *                  password: 
- *                      type: string
- *                      description: the user password for signUp/signIn
  * 
- *          Login:
+ *          Otp_Login:
  *              type: object
  *              required: 
  *                  -   mobile
- *                  -   password
+ *                  -   code
  *              properties: 
  *                  mobile: 
  *                      type: string
  *                      description: the user mobile for Login
- *                  password: 
+ *                  code: 
  *                      type: string
  *                      description: the password code
- *          refreshToken:
+ *          Otp_refreshToken:
  *              type: object
  *              required: 
  *                  -   refreshToken
@@ -47,9 +35,9 @@
 
 /**
  * @swagger 
- *  /users/register: 
+ *  /user/otp_register: 
  *      post: 
- *          tags: [User-Authentication]
+ *          tags: [User-OTP_Authentication]
  *          summary: Login User In feacher mobile and password
  *          description: Login User In feacher mobile and password
  *          requestBody:
@@ -57,7 +45,7 @@
  *              content: 
  *                  application/x-www-form-urlencoded:
  *                      schema: 
- *                          $ref: '#/components/schemas/Register'             
+ *                          $ref: '#/components/schemas/Otp_Register'             
  *          responses: 
  *                  200:
  *                      description: OK
@@ -68,9 +56,9 @@
  */
 /**
  * @swagger
- *  /users/login:
+ *  /user/otp_login:
  *      post:
- *          tags: [User-Authentication]
+ *          tags: [User-OTP_Authentication]
  *          summary: check Login User In password Code with Mobile
  *          description: check Login  mobile and Password
  *          requestBody: 
@@ -78,7 +66,7 @@
  *              content: 
  *                  application/x-www-form-urlencoded:
  *                      schema: 
- *                          $ref: '#/components/schemas/Login'
+ *                          $ref: '#/components/schemas/Otp_Login'
  *          responses: 
  *              200:
  *                  description: OK
@@ -90,9 +78,9 @@
  */
 /**
  * @swagger
- *  /users/refresh_token:
+ *  /user/otp-refreshtoken:
  *      post:
- *          tags: [User-Authentication]
+ *          tags: [User-OTP_Authentication]
  *          summary: check Login  mobile and Password
  *          description: check Login  mobile and Password
  *          requestBody: 
@@ -100,7 +88,7 @@
  *              content: 
  *                  application/x-www-form-urlencoded:
  *                      schema: 
- *                          $ref: '#/components/schemas/refreshToken'      
+ *                          $ref: '#/components/schemas/Otp_refreshToken'      
  *          responses: 
  *              200:
  *                  description: OK

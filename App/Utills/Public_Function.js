@@ -7,9 +7,13 @@ function hashString(str){
 };
 function persionDateGenerator(){ 
     return moment().format("jYYYYjMMjDDHHmmssSS");
+};
+function randomNumberFiveDigitsGenerator(){
+    return (Math.floor(Math.random() * 90000) + 10000);
 }
 
 module.exports = {
     hashString,
-    persionDateGenerator
+    persionDateGenerator,
+    randomNumberFiveDigitsGenerator
 }

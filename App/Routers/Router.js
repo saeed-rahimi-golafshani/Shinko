@@ -8,8 +8,8 @@ const redisClient = require("../Utills/Init.Redis");
     console.log(value);
 })();
 
-router.use("/", IndexApi)
-router.use("/users", userApiAuthenticationRoutes)
+router.use("/", IndexApi);
+router.use("/users", userApiAuthenticationRoutes);
 
 module.exports = {
     AllRoutes: router
