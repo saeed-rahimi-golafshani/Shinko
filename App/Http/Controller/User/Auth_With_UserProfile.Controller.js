@@ -6,6 +6,7 @@ const Controller = require("../Controller");
 const { StatusCodes: httpStatus } = require("http-status-codes");
 const { hashString, persionDateGenerator } = require("../../../Utills/Public_Function");
 const bcrypt = require("bcrypt");
+const { signAccessToken } = require("../../../Utills/Token");
 
 class Auth_UserProfile_Controller extends Controller{
     async register(req, res, next){
@@ -38,10 +39,11 @@ class Auth_UserProfile_Controller extends Controller{
             const getPassword = await PasswordModel.findOne({user_Id: user._id});
             const confirmPassword = bcrypt.compareSync(password, getPassword.password);
             if(!confirmPassword) throw new createHttpError.BadRequest("درخواست نا معتبر، شماره موبایل یا رمز عبور را درست وارد کنید");
+            const accessToken = await signAccessToken(user._id);
             return res.status(httpStatus.OK).json({
                 statusCode: httpStatus.OK,
                 data: {
-                    message: "وارد شد"
+                    accessToken
                 }
             })
         } catch (error) {
