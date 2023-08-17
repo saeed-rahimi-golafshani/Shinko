@@ -10,7 +10,6 @@
  *                  mobile: 
  *                      type: string
  *                      description: the user mobile for signUp/signIn
- * 
  *          Otp_Login:
  *              type: object
  *              required: 
@@ -35,7 +34,7 @@
 
 /**
  * @swagger 
- *  /user/otp_register: 
+ *  /users/otp_register: 
  *      post: 
  *          tags: [User-OTP_Authentication]
  *          summary: Login User In feacher mobile and password
@@ -56,7 +55,7 @@
  */
 /**
  * @swagger
- *  /user/otp_login:
+ *  /users/otp_login:
  *      post:
  *          tags: [User-OTP_Authentication]
  *          summary: check Login User In password Code with Mobile
@@ -78,7 +77,7 @@
  */
 /**
  * @swagger
- *  /user/otp-refreshtoken:
+ *  /users/otp-refreshtoken:
  *      post:
  *          tags: [User-OTP_Authentication]
  *          summary: check Login  mobile and Password

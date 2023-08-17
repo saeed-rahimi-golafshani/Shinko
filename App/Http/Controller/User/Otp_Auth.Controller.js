@@ -2,10 +2,12 @@ const Controller = require("../Controller");
 const createHttpError = require("http-errors");
 const { randomNumberFiveDigitsGenerator } = require("../../../Utills/Public_Function");
 const { ActivationModel } = require("../../../Models/Activation.Model");
-const { otpRegisterSchema } = require("../../Validations/User/OtpAuth.Schema");
+const { otpRegisterSchema, otpLoginSchema } = require("../../Validations/User/OtpAuth.Schema");
 const { StatusCodes: httpStatus } = require("http-status-codes");
 const { UserModel } = require("../../../Models/User.Model");
 const { ROLES } = require("../../../Utills/Constants");
+const { smsClient } = require("../../../Utills/Sms.Panel");
+const { signAccessToken, signRefreshToken, verifyRefreshToken } = require("../../../Utills/Token");
 
 class OtpAuthenticationController extends Controller{
     async otp_Register(req, res, next){
@@ -15,9 +17,11 @@ class OtpAuthenticationController extends Controller{
             const code = await randomNumberFiveDigitsGenerator();
             const resault = await this.saveUser(mobile, code);
             if(!resault) throw new createHttpError.InternalServerError("خطای سروری");
+            // await smsClient(mobile, code)
             return res.status(httpStatus.CREATED).json({
                 statusCode: httpStatus.CREATED,
                 data: {
+                    // message: `کد تایید برای شماره ${mobile} ارسال شد`
                     code
                 }
             })
@@ -55,6 +59,47 @@ class OtpAuthenticationController extends Controller{
         const user = await UserModel.findOne({mobile});
         const updateUser = await ActivationModel.updateOne({user_Id: user._id}, {$set: dataObj})
         return !!updateUser.modifiedCount
+    };
+    async otp_Login(req, res, next){
+        try {
+            const requestBody = await otpLoginSchema.validateAsync(req.body);
+            const { mobile, code } = requestBody;
+            const user = await UserModel.findOne({mobile});
+            if(!user) throw new createHttpError.NotFound("کاربر مورد نظر یافت نشد");
+            const userOtp = await ActivationModel.findOne({user_Id: user._id});
+            if(userOtp.otp.code != code) throw new createHttpError.Unauthorized("کد تایید ارسال شده صحیح نمی باشد");
+            let now = Date.now();
+            if(+userOtp.otp.expiresIn < now ) throw new createHttpError.Unauthorized("کد تایید منقضی شده است");
+            const accessToken = await signAccessToken(user._id);
+            const refreshToken = await signRefreshToken(user._id);
+            return res.status(httpStatus.OK).json({
+                statusCode: httpStatus.OK,
+                data: {
+                    accessToken,
+                    refreshToken
+                }
+            })
+        } catch (error) {
+            next(error)
+        }
+    };
+    async otp_refreshToken(req, res, next){
+        try {
+            const { refreshToken } = req.body;
+            const mobile = await verifyRefreshToken(refreshToken);
+            const user = await UserModel.findOne({mobile});
+            const accessToken = await signAccessToken(user._id);
+            const newRefreshToken = await signRefreshToken(user._id);
+            return res.status(httpStatus.OK).json({
+                statusCode: httpStatus.OK,
+                data: {
+                    accessToken,
+                    refreshToken: newRefreshToken
+                }
+            })
+        } catch (error) {
+            next(error)
+        }
     }
 };
 
