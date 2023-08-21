@@ -22,7 +22,6 @@
  *                  password: 
  *                      type: string
  *                      description: the user password for signUp/signIn
- * 
  *          Login:
  *              type: object
  *              required: 
