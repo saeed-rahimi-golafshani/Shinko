@@ -7,6 +7,11 @@ const swaggerUI = require("swagger-ui-express");
 const createHttpError = require("http-errors");
 const { AllRoutes } = require("./Routers/Router");
 const UserAgent = require("express-useragent");
+const cors = require("cors");
+const morgan = require("morgan");
+// const cookie_Session = require("cookie-session"); // fffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+// const passport = require("passport"); // fffffffffffffffffffffffffffffffffffffffffffffffffffff
+// const passportSetup = require("./Http/Middleware/Passport")
 
 module.exports = class Application{
     #app = express();
@@ -26,7 +31,18 @@ module.exports = class Application{
         this.#app.use(express.json());
         this.#app.use(express.urlencoded({extended: true}));
         this.#app.use(express.static(path.join(__dirname, "..", "Public")));
+        this.#app.use(cors());
+        this.#app.use(morgan("dev"));
         this.#app.use(UserAgent.express());
+
+        // this.#app.use(cookie_Session({    // fffffffffffffffffffffffffffffffffffffffffffff
+            // name: "session",
+            // keys: ["cyberwolve"],
+            // maxAge: 24*60*60*100,
+        // }));
+        // this.#app.use(passport.initialize());// ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+        // this.#app.use(passport.session()); // fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+
         this.#app.use("/api-doc", swaggerUI.serve, swaggerUI.setup( 
             swaggerJSDoc({
                 swaggerDefinition: {
