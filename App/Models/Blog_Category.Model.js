@@ -13,6 +13,11 @@ const BlogCategorySchema = new mongoose.Schema({
     versionKey: false,
     toJSON: {virtuals: true}
 });
+BlogCategorySchema.virtual("children", {
+    ref: "blog_category",
+    localField: "_id",
+    foreignField: "parent_Category"
+})
 
 module.exports = {
     BlogCategoryModel: mongoose.model("blog_category", BlogCategorySchema)

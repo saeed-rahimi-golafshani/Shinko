@@ -96,11 +96,11 @@
 
 /**
 * @swagger
- *  /admin/category/list:
+ *  /admin/blog_category/list:
  *      get: 
  *          tags: [Admin-BlogCategory]
- *          summary: List Of SubCategory  In admin panel
- *          description: List Of SubCategory in admin panel
+ *          summary: List Of BlogCategory  In admin panel
+ *          description: List Of BlogCategory in admin panel
  *          responses: 
  *              200:
  *                  description: OK
@@ -111,7 +111,7 @@
  */
 /**
  * @swagger 
- *  /admin/category/list/{id}: 
+ *  /admin/blog_category/list/{id}: 
  *      get: 
  *          tags: [Admin-BlogCategory]
  *          summary: update category with Id

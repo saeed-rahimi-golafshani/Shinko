@@ -49,9 +49,7 @@ class Auth_UserProfile_Controller extends Controller{
                 const checkLogin = await LoginModel.findOne({user_Id: user._id});
                 const checkBrowser = await BrowserModel.findOne({user_Id: user._id});
                 const ip_number = ip.address();
-                let userAgent;
-                req.headers.useragent = userAgent
-                userAgent = {
+                let userAgent = {
                     browser: req.useragent.browser,
                     version: req.useragent.version,
                     os: req.useragent.os,
@@ -61,40 +59,28 @@ class Auth_UserProfile_Controller extends Controller{
                     isMobile: req.useragent.isMobile,
                     isDesktop: req.useragent.isDesktop
                 };
+                req.headers.useragent = userAgent
                 if(checkLogin && checkBrowser){
-                    const browserUpdate = await BrowserModel.updateOne(
-                        {user_Id: user._id},
-                        {
-                            browser: userAgent.browser,
-                            version: userAgent.version, 
-                            os: userAgent.os, 
-                            platform: userAgent.platform, 
-                            source: userAgent.soure, 
-                            geoIp: userAgent.geoIp, 
-                            isMobile: userAgent.isMobile, 
-                            isDesktop: userAgent.isDesktop
-                        });
-                        if(browserUpdate.modifiedCount == 0) throw new createHttpError.InternalServerError("خطای سروری");
-                    const updateLoginResault = await LoginModel.updateOne({user_Id: user._id}, {browser_Id: browserUpdate._id, ip_Number: ip_number});
-                    if(updateLoginResault.modifiedCount == 0) throw new createHttpError.InternalServerError("خطای سروری");
-                }else {
-                    const browserCreate = await BrowserModel.create(
-                        {
-                            user_Id: user._id,
-                            browser: userAgent.browser, 
-                            version: userAgent.version, 
-                            os: userAgent.os, 
-                            platform: userAgent.platform, 
-                            source: userAgent.sooure, 
-                            geoIp: userAgent.geoIp, 
-                            isMobile: userAgent.isMobile, 
-                            isDesktop: userAgent.isDesktop
-                        });
-                        if(!browserCreate) throw new createHttpError.InternalServerError("خطای سروری");
-                        const loginCreate = await LoginModel.create({user_Id: user._id, browser_Id: browserCreate._id, ip_Number: ip_number})
-                        if(!loginCreate) throw new createHttpError.InternalServerError("خطای سروری") 
+                    const browserUpdate = await BrowserModel.deleteOne({user_Id: user._id});
+                        if(browserUpdate.deletedCount == 0) throw new createHttpError.InternalServerError("خطای سروری");
+                    const updateLoginResault = await LoginModel.deleteOne({user_Id: user._id});
+                        if(updateLoginResault.deletedCount == 0) throw new createHttpError.InternalServerError("خطای سروری");
                 }
-               
+                const browserCreate = await BrowserModel.create(
+                    {
+                        user_Id: user._id,
+                        browser: userAgent.browser, 
+                        version: userAgent.version, 
+                        os: userAgent.os, 
+                        platform: userAgent.platform, 
+                        source: userAgent.sooure, 
+                        geoIp: userAgent.geoIp, 
+                        isMobile: userAgent.isMobile, 
+                        isDesktop: userAgent.isDesktop
+                    });
+                    if(!browserCreate) throw new createHttpError.InternalServerError("خطای سروری");
+                    const loginCreate = await LoginModel.create({user_Id: user._id, browser_Id: browserCreate._id, ip_Number: ip_number})
+                    if(!loginCreate) throw new createHttpError.InternalServerError("خطای سروری");               
             }
             return res.status(httpStatus.OK).json({
                 statusCode: httpStatus.OK,
