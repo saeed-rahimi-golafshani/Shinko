@@ -17,8 +17,18 @@ BlogCategorySchema.virtual("children", {
     ref: "blog_category",
     localField: "_id",
     foreignField: "parent_Category"
-})
+});
+function autoPopulate(next){
+    this.populate([
+        {path: "children", select: {__v: 0, id: 0, createdAt: 0, updatedAt: 0}}
+    ]);
+    next()
+}
+BlogCategorySchema.pre("findOne", autoPopulate).pre("find", autoPopulate)
 
+BlogCategorySchema.virtual("iconUrl").get(function(){
+    return `${process.env.BASEURL}:${process.env.APPLICATION_PORT}/${this.icon}`
+});
 module.exports = {
     BlogCategoryModel: mongoose.model("blog_category", BlogCategorySchema)
 };

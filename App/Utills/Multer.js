@@ -2,35 +2,38 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const createHttpError = require("http-errors");
+const { uploadFileWithFolderName } = require("./Public_Function");
 
-function createRoute(req, file, folderName){ 
-    const { en_title } = req.body;
-    if(en_title){
-      const date = new Date();
-      const year = date.getFullYear().toString();
-      const month = date.getMonth().toString();
-      const day = date.getDate().toString();
-      const directory = path.join(__dirname, "..", "..", "Public", "Uploads", folderName, file, year, month, day, `${en_title}`)
-      req.body.fileUploadPath = path.join("Uploads", folderName, file, year, month, day, `${en_title}`);
-      fs.mkdirSync(directory, {recursive: true});
-      return directory  
-    } else {
-      const date = new Date();
-      const year = date.getFullYear().toString();
-      const month = date.getMonth().toString();
-      const day = date.getDate().toString();
-      const directory = path.join(__dirname, "..", "..", "Public", "Uploads", folderName, file, year, month, day)
-      req.body.fileUploadPath = path.join("Uploads", folderName, file, year, month, day);
-      fs.mkdirSync(directory, {recursive: true});
-      return directory
-    }
+async function createRoute(req, file, folderName){ 
+  const { en_title } = req.body;
+  if(en_title){
+    const date = new Date();
+    const year = date.getFullYear().toString();
+    const month = date.getMonth().toString();
+    const day = date.getDate().toString();
+    const directory = path.join(__dirname, "..", "..", "Public", "Uploads", folderName, file, year, month, day, `${en_title}`)
+    req.body.fileUploadPath = path.join("Uploads", folderName, file, year, month, day, `${en_title}`);
+    fs.mkdirSync(directory, {recursive: true});
+    return directory  
+} else {
+    const fileName = await uploadFileWithFolderName(req.params, folderName);
+    const date = new Date();
+    const year = date.getFullYear().toString();
+    const month = date.getMonth().toString();
+    const day = date.getDate().toString();
+    const directory = path.join(__dirname, "..", "..", "Public", "Uploads", folderName, file, year, month, day, `${fileName}`)
+    req.body.fileUploadPath = path.join("Uploads", folderName, file, year, month, day, `${fileName}`);
+    fs.mkdirSync(directory, {recursive: true});
+    return directory
+  }
 }
+
 const uploadFile = (folderName) => {
     return imageUpload = multer({
       storage: multer.diskStorage({
-        destination: (req, file, cb) => {
+        destination: async(req, file, cb) => {
           if(file?.originalname){
-            const filePath  = createRoute(req, file.fieldname, folderName);
+            const filePath  = await createRoute(req, file.fieldname, folderName);
             return cb(null, filePath);
           } cb(null, null)
         },

@@ -70,7 +70,22 @@
  *              properties: 
  *                  title: 
  *                      type: string
- *                      description: the title of category
+ *                      description: the title of BlogCategory 
+ *                  en_title: 
+ *                      type: string
+ *                      description: the en_title of BlogCategory 
+ *                  parent_Category: 
+ *                      type: string
+ *                      description: the parent_Category of BlogCategory
+ *                  icon: 
+ *                      type: file
+ *                      description: the summery of text of BlogCategory
+ *                  showInArchive: 
+ *                      type: boolean
+ *                      description: the showInArchive of BlogCategory 
+ *                  priority: 
+ *                      type: string
+ *                      description: the parent_Category of BlogCategory
  */
 /**
  * @swagger 
@@ -131,16 +146,11 @@
  */
 /**
 * @swagger
- *  /admin/category/all_list:
+ *  /admin/blog_category/list-all:
  *      get: 
  *          tags: [Admin-BlogCategory]
  *          summary: List Of All Category  In admin panel
  *          description: List Of All Category in admin panel
- *          parameters: 
- *              -   in: query
- *                  name: search
- *                  type: string
- *                  description: text for search in title of product
  *          responses: 
  *              200:
  *                  description: OK
@@ -171,7 +181,7 @@
  */
 /**
  * @swagger 
- *  /admin/category/update/{id}: 
+ *  /admin/blog_category/update/{id}: 
  *      patch: 
  *          tags: [Admin-BlogCategory]
  *          summary: update category with Id
@@ -182,10 +192,7 @@
  *                  type: string
  *                  required: true
  *          requestBody:
- *              content: 
- *                  application/x-www-form-urlencoded:
- *                      schema: 
- *                          $ref: '#/components/schemas/UpdateCategory'             
+ *              content:             
  *                  multipart/form-data:
  *                      schema:
  *                          $ref: '#/components/schemas/UpdateCategory'
