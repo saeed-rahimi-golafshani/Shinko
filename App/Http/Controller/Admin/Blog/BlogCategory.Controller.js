@@ -13,9 +13,12 @@ class BlogCategoryController extends Controller{
         try {
             const requestBody = await createBlogCategorySchema.validateAsync(req.body);
             const { title, en_title, showInArchive, priority, parent_Category } = requestBody;
-            await this.checkBlogCategoryWithTitle(title);
             if(req.body.fileUploadPath && req.body.filename){
                 req.body.icon = path.join(requestBody.fileUploadPath, requestBody.filename).replace(/\\/g, "/");
+            }
+            const checkBlogByTitle = await this.checkBlogCategoryWithTitle(title);
+            if(!checkBlogByTitle){
+                deleteFileInPath(req.body.icon);
             }
             const icon = req.body.icon;
             const createResault = await BlogCategoryModel.create({title, en_title, parent_Category, icon, showInArchive, priority});
@@ -23,7 +26,6 @@ class BlogCategoryController extends Controller{
                 deleteFileInPath(req.body.icon);
                 throw new createHttpError.InternalServerError("خطای سروری")
             } 
-            
             if(requestBody.parent_Category){
                 const findBlogCategory = await BlogCategoryModel.findOne({_id:  requestBody.parent_Category});
                 let count = findBlogCategory.count;
@@ -89,20 +91,9 @@ class BlogCategoryController extends Controller{
             const { id } = req.params; 
             const blogCategory = await this.checkBlogCategoryWithId(id);
             const DataBody = copyObject(req.body);
-            if(!blogCategory) {
-                console.log(DataBody.icon);
-                await deleteFileInPath(DataBody.icon)
-            }
             if(DataBody.fileUploadPath && DataBody.filename){
-                if(DataBody.en_title){                
-                    await deleteFileInPath(blogCategory.icon);
-                    DataBody.icon = path.join(DataBody.fileUploadPath, DataBody.filename).replace(/\\/g, "/");
-                } else {
-                    DataBody.en_title = blogCategory.en_title;
-                    await deleteFileInPath(blogCategory.icon);
-                    DataBody.icon = path.join(DataBody.fileUploadPath, DataBody.filename).replace(/\\/g, "/");
-                }
-                
+                deleteFileInPath(blogCategory.icon);
+                DataBody.icon = path.join(DataBody.fileUploadPath, DataBody.filename).replace(/\\/g, "/");                
             };
             deleteInvalidPropertyObjectWithOutBlackList(DataBody);
             if(DataBody.parent_Category){

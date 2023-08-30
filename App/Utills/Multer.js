@@ -6,23 +6,19 @@ const { uploadFileWithFolderName } = require("./Public_Function");
 
 async function createRoute(req, file, folderName){ 
   const { en_title } = req.body;
+  const date = new Date();
+  const year = date.getFullYear().toString();
+  const month = date.getMonth().toString();
+  const day = date.getDate().toString();
   if(en_title){
-    const date = new Date();
-    const year = date.getFullYear().toString();
-    const month = date.getMonth().toString();
-    const day = date.getDate().toString();
-    const directory = path.join(__dirname, "..", "..", "Public", "Uploads", folderName, file, year, month, day, `${en_title}`)
-    req.body.fileUploadPath = path.join("Uploads", folderName, file, year, month, day, `${en_title}`);
+    const directory = path.join(__dirname, "..", "..", "Public", "Uploads", folderName, file, year, `${en_title}`)
+    req.body.fileUploadPath = path.join("Uploads", folderName, file, year, `${en_title}`);
     fs.mkdirSync(directory, {recursive: true});
     return directory  
 } else {
     const fileName = await uploadFileWithFolderName(req.params, folderName);
-    const date = new Date();
-    const year = date.getFullYear().toString();
-    const month = date.getMonth().toString();
-    const day = date.getDate().toString();
-    const directory = path.join(__dirname, "..", "..", "Public", "Uploads", folderName, file, year, month, day, `${fileName}`)
-    req.body.fileUploadPath = path.join("Uploads", folderName, file, year, month, day, `${fileName}`);
+    const directory = path.join(__dirname, "..", "..", "Public", "Uploads", folderName, file, year, `${fileName}`)
+    req.body.fileUploadPath = path.join("Uploads", folderName, file, year, `${fileName}`);
     fs.mkdirSync(directory, {recursive: true});
     return directory
   }
