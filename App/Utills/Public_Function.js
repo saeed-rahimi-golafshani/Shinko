@@ -48,6 +48,18 @@ async function uploadFileWithFolderName(req, folderName){
     };
     return fileName
 };
+function listOfImageFromRequest(files, fileUploadPath){
+    if(files?.length > 0){
+        return (files.map(file => path.join(fileUploadPath, file.filename)).map(item => item.replace(/\\/g, "/")));
+    } else {
+        return []
+    }
+};
+function getFilesizeInBytes(filename) {
+    var stats = fs.statSync(filename);
+    var fileSizeInBytes = stats.size;
+    return fileSizeInBytes;
+};
 module.exports = {
     hashString,
     persionDateGenerator,
@@ -57,4 +69,6 @@ module.exports = {
     deleteInvalidPropertyObjectWithOutBlackList,
     getEnTitle,
     uploadFileWithFolderName,
+    listOfImageFromRequest,
+    getFilesizeInBytes
 }

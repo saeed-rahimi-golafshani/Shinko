@@ -7,6 +7,8 @@
  *          description: User-auth_Otp section
  *      -   name: Admin-BlogCategory
  *          description: the BlogCategory section
+ *      -   name: Admin-Blog
+ *          description: the Blog section
  */
 
 
