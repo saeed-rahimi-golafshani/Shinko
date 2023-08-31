@@ -47,8 +47,7 @@ async function uploadFileWithFolderName(req, folderName){
       fileName = await getEnTitle(req, BlogCategoryModel)
     };
     return fileName
-}
-
+};
 module.exports = {
     hashString,
     persionDateGenerator,
@@ -57,5 +56,5 @@ module.exports = {
     copyObject,
     deleteInvalidPropertyObjectWithOutBlackList,
     getEnTitle,
-    uploadFileWithFolderName
+    uploadFileWithFolderName,
 }

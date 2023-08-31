@@ -8,6 +8,7 @@ router.get("/list/:id", BlogCategoryController.listOfBlogCategoryById);
 router.get("/list_of_all", BlogCategoryController.listAllBlogCategory);
 router.get("/list-all", BlogCategoryController.listAllBlogCategory);
 router.patch("/update/:id", uploadFile("BlogCategory").fields([{name: "icon"}]), BlogCategoryController.updateBlogCategory);
+router.delete("/remove/:id", BlogCategoryController.removeBlogCategory);
 
 module.exports = {
     AdminApiBlogCategoryRoutes: router

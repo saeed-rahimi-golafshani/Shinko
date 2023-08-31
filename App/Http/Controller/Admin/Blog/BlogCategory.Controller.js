@@ -7,6 +7,7 @@ const fs = require("fs");
 const { StatusCodes: httpStatus } = require("http-status-codes");
 const { deleteFileInPath, copyObject, deleteInvalidPropertyObjectWithOutBlackList } = require("../../../../Utills/Public_Function");
 const { default: mongoose } = require("mongoose");
+const { count } = require("console");
 
 class BlogCategoryController extends Controller{
     async createBlogCategory(req, res, next){
@@ -16,10 +17,7 @@ class BlogCategoryController extends Controller{
             if(req.body.fileUploadPath && req.body.filename){
                 req.body.icon = path.join(requestBody.fileUploadPath, requestBody.filename).replace(/\\/g, "/");
             }
-            const checkBlogByTitle = await this.checkBlogCategoryWithTitle(title);
-            if(!checkBlogByTitle){
-                deleteFileInPath(req.body.icon);
-            }
+            await this.checkBlogCategoryWithTitle(title);
             const icon = req.body.icon;
             const createResault = await BlogCategoryModel.create({title, en_title, parent_Category, icon, showInArchive, priority});
             if(!createResault){
@@ -42,8 +40,8 @@ class BlogCategoryController extends Controller{
             });
 
         } catch (error) {
-            deleteFileInPath(req.body.icon)
-            next(error)
+            deleteFileInPath(req.body.icon);
+            next(error);
         }
     };
     async listOfBlogCategory(req, res, next){
@@ -103,10 +101,10 @@ class BlogCategoryController extends Controller{
                 let subCount = subtractBlogCategory.count;
                 let SubtractCount = subCount - 1;
                 subCount = SubtractCount;
-                await BlogCategoryModel.updateOne({_id: subtractBlogCategory.id}, {count: subCount});
                 let sumCount = sumBlogCategory.count;
                 let newCount = sumCount + 1;
                 sumCount = newCount;
+                await BlogCategoryModel.updateOne({_id: subtractBlogCategory.id}, {count: subCount});
                 await BlogCategoryModel.updateOne({_id: sumBlogCategory.id}, {count: sumCount});
             }
             const updateResault = await BlogCategoryModel.updateOne({_id: blogCategory.id}, {$set: DataBody});
@@ -118,9 +116,40 @@ class BlogCategoryController extends Controller{
                 }
             });
         } catch (error) {
+            deleteFileInPath(req.body.icon);
+            next(error);
+        }
+    };
+    async removeBlogCategory(req, res, next){
+        try {
+            const { id } = req.params;
+            const blogCategory = await this.checkBlogCategoryWithId(id);
+            const deleteResault = await BlogCategoryModel.deleteOne({$or: [
+                {_id: blogCategory._id},
+                {parent_Category: blogCategory._id}
+            ]});
+            if(deleteResault.deletedCount == 0) throw new createHttpError.InternalServerError("خطای سروری");
+            if(blogCategory.parent_Category){
+                const subtractBlogCategory = await BlogCategoryModel.findOne({_id: blogCategory.parent_Category});
+                let subCount = subtractBlogCategory.count;
+                let SubtractCount = subCount - 1;
+                subCount = SubtractCount;  
+                await BlogCategoryModel.updateOne({_id: subtractBlogCategory.id}, {count: subCount});
+            }
+            if(blogCategory.icon){
+                deleteFileInPath(blogCategory.icon);
+            };
+            return res.status(httpStatus.OK).json({
+                statusCode: httpStatus.OK,
+                data: {
+                    message: "دسته بندی مقالات با موفقیت حذف شد"
+                }
+            });
+
+        } catch (error) {
             next(error)
         }
-    }
+    };
     async checkBlogCategoryWithTitle(title){
         const blogCategory = await BlogCategoryModel.findOne({title});
         if(blogCategory) throw new createHttpError.BadRequest("عنوان دسته بندی از قبل ثبت شده است، لطفا عنوان دیگری رار انتخاب کنید");

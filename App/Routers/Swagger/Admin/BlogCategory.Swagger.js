@@ -161,11 +161,11 @@
  */
 /**
  * @swagger 
- *  /admin/category/remove/{id}: 
+ *  /admin/blog_category/remove/{id}: 
  *      delete: 
  *          tags: [Admin-BlogCategory]
- *          summary: delete category with Id
- *          description: delete category in admin panel
+ *          summary: delete BlogCategory with Id
+ *          description: delete BlogCategory in admin panel
  *          parameters:
  *              -   in: path
  *                  name: id
@@ -184,7 +184,7 @@
  *  /admin/blog_category/update/{id}: 
  *      patch: 
  *          tags: [Admin-BlogCategory]
- *          summary: update category with Id
+ *          summary: update BlogCategory with Id
  *          description: update category in admin panel
  *          parameters:
  *              -   in: path
