@@ -55,11 +55,28 @@ function listOfImageFromRequest(files, fileUploadPath){
         return []
     }
 };
-function getFilesizeInBytes(filename) {
-    var stats = fs.statSync(filename);
-    var fileSizeInBytes = stats.size;
-    return fileSizeInBytes;
+function getFileOrginalname(files) {
+    return files.map(file => {return (file.originalname)});
+    
 };
+function getFileEncoding(files) {
+    return files.map(file => {return (file.encoding)});
+};
+function getFileMimetype(files) {
+    return files.map(file => {return (file.mimetype)});
+};
+function getFileFilename(files) {
+    return files.map(file => {return (file.filename)});
+};
+function getFileSize(files){
+    let total = 0;
+    const fileSize = files.map(file => {return (file.size)});
+    for (const i in fileSize){
+        total += fileSize[i];
+    };
+    return total;
+}
+
 module.exports = {
     hashString,
     persionDateGenerator,
@@ -70,5 +87,10 @@ module.exports = {
     getEnTitle,
     uploadFileWithFolderName,
     listOfImageFromRequest,
-    getFilesizeInBytes
+    getFileOrginalname,
+    getFileEncoding,
+    getFileMimetype,
+    getFileFilename,
+    getFileSize
+    
 }

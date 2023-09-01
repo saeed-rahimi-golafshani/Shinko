@@ -8,8 +8,8 @@ async function createRoute(req, file, folderName){
   const { en_title } = req.body;
   const date = new Date();
   const year = date.getFullYear().toString();
-  const month = date.getMonth().toString();
-  const day = date.getDate().toString();
+  // const month = date.getMonth().toString();
+  // const day = date.getDate().toString();
   if(en_title){
     const directory = path.join(__dirname, "..", "..", "Public", "Uploads", folderName, file, year, `${en_title}`)
     req.body.fileUploadPath = path.join("Uploads", folderName, file, year, `${en_title}`);
