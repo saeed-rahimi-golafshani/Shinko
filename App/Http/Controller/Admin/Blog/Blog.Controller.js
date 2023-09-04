@@ -2,7 +2,7 @@ const createHttpError = require("http-errors");
 const { BlogModel } = require("../../../../Models/Blog.Model");
 const { createBlogSchema } = require("../../../Validations/Admin/Blog.Schema");
 const Controller = require("../../Controller");
-const { listOfImageFromRequest, getFileOrginalname, getFileEncoding, getFileMimetype, getFileSize, getFileFilename, checkExistOfModelById } = require("../../../../Utills/Public_Function");
+const { listOfImageFromRequest, getFileOrginalname, getFileEncoding, getFileMimetype, getFileSize, getFileFilename, checkExistOfModelById, checkExistOfModelByTitle } = require("../../../../Utills/Public_Function");
 const path = require("path");
 const { FileModel } = require("../../../../Models/Files.Model");
 const { StatusCodes: httpStatus } = require("http-status-codes");
@@ -16,7 +16,7 @@ class BlogController extends Controller{
         try {
             const requestBody = await createBlogSchema.validateAsync(req.body);
             const { blog_category_Id, title, en_title, short_text, text, tags, reading_time } = requestBody;
-            await this.checkBlogWithTitle(title);
+            await checkExistOfModelByTitle(title, BlogModel);
             const author = req.user._id;
             const blog = await BlogModel.create({
                 blog_category_Id, 
@@ -134,11 +134,6 @@ class BlogController extends Controller{
             next(error)
         }
     }
-    async checkBlogWithTitle(title){
-        const blog = await BlogModel.findOne({title});
-        if(blog) throw new createHttpError.BadRequest("عنوان بلاگ از قبل ثبت شده است، لطفا عنوان دیگری را انتخاب کنید");
-        return blog;
-    };
 };
 
 module.exports = {

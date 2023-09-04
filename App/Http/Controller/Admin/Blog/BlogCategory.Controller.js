@@ -3,11 +3,8 @@ const { BlogCategoryModel } = require("../../../../Models/Blog_Category.Model");
 const { createBlogCategorySchema } = require("../../../Validations/Admin/Blog.Schema");
 const Controller = require("../../Controller");
 const path = require("path");
-const fs = require("fs");
 const { StatusCodes: httpStatus } = require("http-status-codes");
-const { deleteFileInPath, copyObject, deleteInvalidPropertyObjectWithOutBlackList } = require("../../../../Utills/Public_Function");
-const { default: mongoose } = require("mongoose");
-const { count } = require("console");
+const { deleteFileInPath, copyObject, deleteInvalidPropertyObjectWithOutBlackList, checkExistOfModelByTitle, checkExistOfModelById } = require("../../../../Utills/Public_Function");
 
 class BlogCategoryController extends Controller{
     async createBlogCategory(req, res, next){
@@ -17,7 +14,7 @@ class BlogCategoryController extends Controller{
             if(req.body.fileUploadPath && req.body.filename){
                 req.body.icon = path.join(requestBody.fileUploadPath, requestBody.filename).replace(/\\/g, "/");
             }
-            await this.checkBlogCategoryWithTitle(title);
+            await checkExistOfModelByTitle(title, BlogCategoryModel)
             const icon = req.body.icon;
             const createResault = await BlogCategoryModel.create({title, en_title, parent_Category, icon, showInArchive, priority});
             if(!createResault){
@@ -61,7 +58,7 @@ class BlogCategoryController extends Controller{
     async listOfBlogCategoryById(req, res, next){
         try {
             const { id } = req.params;
-            const checkId = await this.checkBlogCategoryWithId(id);
+            const checkId = await checkExistOfModelById(id, BlogCategoryModel);
             const blogCategory = await BlogCategoryModel.findOne({_id: checkId.id});
             if(!blogCategory) throw new createHttpError.NotFound("دسته بندی مقاله ای یافت نشد");
             return res.status(httpStatus.OK).json({
@@ -87,7 +84,7 @@ class BlogCategoryController extends Controller{
     async updateBlogCategory(req, res, next){
         try {
             const { id } = req.params; 
-            const blogCategory = await this.checkBlogCategoryWithId(id);
+            const blogCategory = await checkExistOfModelById(id, BlogCategoryModel);
             const DataBody = copyObject(req.body);
             if(DataBody.fileUploadPath && DataBody.filename){
                 deleteFileInPath(blogCategory.icon);
@@ -123,7 +120,7 @@ class BlogCategoryController extends Controller{
     async removeBlogCategory(req, res, next){
         try {
             const { id } = req.params;
-            const blogCategory = await this.checkBlogCategoryWithId(id);
+            const blogCategory = await checkExistOfModelById(id, BlogCategoryModel);
             const deleteResault = await BlogCategoryModel.deleteOne({$or: [
                 {_id: blogCategory._id},
                 {parent_Category: blogCategory._id}
@@ -149,17 +146,6 @@ class BlogCategoryController extends Controller{
         } catch (error) {
             next(error)
         }
-    };
-    async checkBlogCategoryWithTitle(title){
-        const blogCategory = await BlogCategoryModel.findOne({title});
-        if(blogCategory) throw new createHttpError.BadRequest("عنوان دسته بندی از قبل ثبت شده است، لطفا عنوان دیگری رار انتخاب کنید");
-        return blogCategory
-    };
-    async checkBlogCategoryWithId(id){
-        if(!mongoose.isValidObjectId(id)) throw new createHttpError.BadRequest("ساختار شناسه مورد نظر اشتباه است");
-        const blogCategory = await BlogCategoryModel.findById(id);
-        if(!blogCategory) throw new createHttpError.NotFound("دسته بندی مقاله ای یافت نشد");
-        return blogCategory
     };
 };
 

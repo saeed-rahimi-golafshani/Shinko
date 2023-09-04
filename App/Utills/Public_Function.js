@@ -86,6 +86,11 @@ async function checkExistOfModelById(id, modelSchema){
     if(!model) throw new createHttpError.NotFound("گزینه مورد نظر یافت نشد");
     return model
 };
+async function checkExistOfModelByTitle(title, modelSchema){
+    const model = await modelSchema.findOne({title});
+        if(model) throw new createHttpError.BadRequest("این عنوان از قبل ثبت شده است، لطفا عنوان دیگری را انتخاب کنید");
+        return model;
+};
 
 module.exports = {
     hashString,
@@ -102,6 +107,7 @@ module.exports = {
     getFileMimetype,
     getFileFilename,
     getFileSize,
-    checkExistOfModelById
+    checkExistOfModelById,
+    checkExistOfModelByTitle
     
 }
