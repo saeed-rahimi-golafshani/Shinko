@@ -1,8 +1,8 @@
 const { default: mongoose } = require("mongoose");
 
 const FileSchema = new mongoose.Schema({
-    types: {type: [String], required: true},
-    type_Id: {type: mongoose.Types.ObjectId, reduired: true},
+    files: {type: [String]},
+    type: {type: String, required: true},
     originalnames: {type: [String], default: []},
     encoding: {type: [String], default: []},
     mimetype: {type: [String], default: []},
@@ -10,9 +10,6 @@ const FileSchema = new mongoose.Schema({
     size: {type: String},    
 }, {
     timestamps: true
-});
-FileSchema.virtual("typesUrl").get(function(){
-    return this.types.map(files => `${process.env.BASEURL}:${process.env.APPLICATION_PORT}/${files}`)
 });
 
 module.exports = {

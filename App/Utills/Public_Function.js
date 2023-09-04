@@ -3,6 +3,8 @@ const moment = require("moment-jalali");
 const path = require("path");
 const fs = require("fs");
 const { BlogCategoryModel } = require("../Models/Blog_Category.Model");
+const { default: mongoose } = require("mongoose");
+const createHttpError = require("http-errors");
 
 
 function hashString(str){
@@ -69,13 +71,21 @@ function getFileFilename(files) {
     return files.map(file => {return (file.filename)});
 };
 function getFileSize(files){
-    let total = 0;
+    let sum = 0;
     const fileSize = files.map(file => {return (file.size)});
     for (const i in fileSize){
-        total += fileSize[i];
+        sum += fileSize[i];
     };
-    return total;
-}
+    sum = (sum / 1024);
+    const total = Math.ceil(sum);
+    return total; 
+};
+async function checkExistOfModelById(id, modelSchema){
+    if(!mongoose.isValidObjectId(id)) throw new createHttpError.BadRequest("ساختار شناسه مورد نظر یافت نشد");
+    const model = await modelSchema.findById(id);
+    if(!model) throw new createHttpError.NotFound("گزینه مورد نظر یافت نشد");
+    return model
+};
 
 module.exports = {
     hashString,
@@ -91,6 +101,7 @@ module.exports = {
     getFileEncoding,
     getFileMimetype,
     getFileFilename,
-    getFileSize
+    getFileSize,
+    checkExistOfModelById
     
 }

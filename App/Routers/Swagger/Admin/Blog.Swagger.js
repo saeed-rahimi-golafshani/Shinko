@@ -158,6 +158,26 @@
  */
 /**
 * @swagger
+ *  /admin/blog/list_author/{authorId}:
+ *      get: 
+ *          tags: [Admin-Blog]
+ *          summary: List Of BlogCategory  In admin panel
+ *          description: List Of BlogCategory in admin panel
+ *          parameters:
+ *              -   in: path
+ *                  name: authorId
+ *                  type: string
+ *                  required: true
+ *          responses: 
+ *              200:
+ *                  description: OK
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/definitions/PublicDefinition'
+ */
+/**
+* @swagger
  *  /admin/blog/list-all:
  *      get: 
  *          tags: [Admin-Blog]
