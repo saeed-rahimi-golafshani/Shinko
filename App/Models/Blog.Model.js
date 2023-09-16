@@ -1,5 +1,4 @@
 const { default: mongoose } = require("mongoose");
-const { FileModel } = require("./Files.Model");
 
 const BlogSchema = new mongoose.Schema({
     author: {type: mongoose.Types.ObjectId, ref: "user", required: true},

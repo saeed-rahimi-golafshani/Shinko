@@ -77,27 +77,35 @@
  *                      items: 
  *                          type: string
  *                          format: binary
- *          UpdateCategory: 
+ *          UpdateBlog: 
  *              type: object
  *              properties: 
  *                  title: 
  *                      type: string
- *                      description: the title of BlogCategory 
+ *                      description: the title of Blog
  *                  en_title: 
  *                      type: string
- *                      description: the en_title of BlogCategory 
- *                  parent_Category: 
+ *                      description: the en_title of Blog
+ *                  blog_category_Id: 
  *                      type: string
- *                      description: the parent_Category of BlogCategory
- *                  icon: 
- *                      type: file
- *                      description: the summery of text of BlogCategory
- *                  showInArchive: 
- *                      type: boolean
- *                      description: the showInArchive of BlogCategory 
- *                  priority: 
+ *                      description: the author of Blog
+ *                  short_text: 
  *                      type: string
- *                      description: the parent_Category of BlogCategory
+ *                      description: the short_text of Blog 
+ *                  text: 
+ *                      type: string
+ *                      description: the text of Blog
+ *                  tags: 
+ *                      type: array
+ *                      description: the text of Blog
+ *                  reading_time: 
+ *                      type: string
+ *                      description: the text of Blog
+ *                  images: 
+ *                      type: array
+ *                      items: 
+ *                          type: string
+ *                          format: binary
  */
 /**
  * @swagger 
@@ -178,11 +186,16 @@
  */
 /**
 * @swagger
- *  /admin/blog/list-all:
+ *  /admin/blog/list_blogcategory/{catId}:
  *      get: 
  *          tags: [Admin-Blog]
  *          summary: List Of All Category  In admin panel
  *          description: List Of All Category in admin panel
+ *          parameters:
+ *              -   in: path
+ *                  name: catId
+ *                  type: string
+ *                  required: true
  *          responses: 
  *              200:
  *                  description: OK
@@ -227,7 +240,7 @@
  *              content:             
  *                  multipart/form-data:
  *                      schema:
- *                          $ref: '#/components/schemas/UpdateCategory'
+ *                          $ref: '#/components/schemas/UpdateBlog'
  *          responses: 
  *                  200:
  *                      description: OK

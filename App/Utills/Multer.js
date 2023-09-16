@@ -6,6 +6,7 @@ const { uploadFileWithFolderName } = require("./Public_Function");
 
 async function createRoute(req, file, folderName){ 
   const { en_title } = req.body;
+  console.log(req.body);
   const date = new Date();
   const year = date.getFullYear().toString();
   // const month = date.getMonth().toString();

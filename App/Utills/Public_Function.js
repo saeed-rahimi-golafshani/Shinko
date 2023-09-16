@@ -2,10 +2,11 @@ const bcrypt = require("bcrypt");
 const moment = require("moment-jalali");
 const path = require("path");
 const fs = require("fs");
+const { unlink } = require("fs/promises")
 const { BlogCategoryModel } = require("../Models/Blog_Category.Model");
+const { BlogModel } = require("../Models/Blog.Model");
 const { default: mongoose } = require("mongoose");
 const createHttpError = require("http-errors");
-
 
 function hashString(str){
     const salt = bcrypt.genSaltSync(10);
@@ -19,12 +20,38 @@ function randomNumberFiveDigitsGenerator(){
 };
 async function deleteFileInPath(fileAddress){
     if(fileAddress){
-        const filePath = path.join(__dirname, "..", "..", "Public", fileAddress)
-        if(fs.existsSync(filePath)){
-            fs.re
-            fs.unlinkSync(filePath);
+        const pathFile = path.join(__dirname, "..", "..", "Public", fileAddress);
+        if(fs.existsSync(pathFile)) unlink(pathFile);
+       }
+};
+async function deleteFolderInPath(fileAddress){
+    if(fileAddress){
+        const pathFile = fileAddress.map(item => path.join(__dirname, "..", "..", "Public", item))
+        const deleteFiles = async (paths) => {
+            try {
+                const promises = paths.map((file) => unlink(file))
+                await Promise.all(promises)
+                console.log('All files deleted successfully')
+            } catch (error) {
+                console.error(error)
+            }
         }
-        
+        deleteFiles(pathFile)
+    }   
+};
+async function deleteFileInPathArray(fileAddress){
+    if(fileAddress){
+        const pathFile = fileAddress.map(item => path.join(__dirname, "..", "..", "Public", item))
+        const deleteFiles = async (paths) => {
+            try {
+                const promises = paths.map((file) => unlink(file))
+                await Promise.all(promises)
+                console.log('All files deleted successfully')
+            } catch (error) {
+                console.error(error)
+            }
+        }
+        deleteFiles(pathFile)
     }
 };
 function copyObject(obj){
@@ -47,8 +74,13 @@ async function uploadFileWithFolderName(req, folderName){
     let fileName;
     if(folderName == "BlogCategory"){
       fileName = await getEnTitle(req, BlogCategoryModel)
-    };
-    return fileName
+      return fileName
+    }
+    else if(folderName == "Blogs"){
+        fileName = await getEnTitle(req, BlogModel)
+        return fileName
+    }
+    
 };
 function listOfImageFromRequest(files, fileUploadPath){
     if(files?.length > 0){
@@ -86,11 +118,58 @@ async function checkExistOfModelById(id, modelSchema){
     if(!model) throw new createHttpError.NotFound("گزینه مورد نظر یافت نشد");
     return model
 };
-async function checkExistOfModelByTitle(title, modelSchema){
+async function checkExistOfModelByTitle(title, modelSchema, fileAddress){
     const model = await modelSchema.findOne({title});
-        if(model) throw new createHttpError.BadRequest("این عنوان از قبل ثبت شده است، لطفا عنوان دیگری را انتخاب کنید");
+        if(model){
+            deleteFileInPathArray(fileAddress)
+            throw new createHttpError.BadRequest("این عنوان از قبل ثبت شده است، لطفا عنوان دیگری را انتخاب کنید")
+        }
         return model;
 };
+async function createCounterCategory(model, modelDetaileCategory){
+
+    const modelCategory = await model.findOne({_id: modelDetaileCategory});
+    if(!modelCategory) throw new createHttpError.InternalServerError("خطای سروری");
+    let count = modelCategory.count;
+    let newCount = count + 1;
+    count = newCount;
+    return await model.updateOne({_id: modelCategory.id}, {count});
+    // const blogCategory = await BlogCategoryModel.findOne({_id: blog.blog_category_Id});
+    // if(!blogCategory) throw new createHttpError.InternalServerError("خطای سروری");
+    // let count = blogCategory.count;
+    // let newCount = count + 1;
+    // count = newCount
+    // await BlogCategoryModel.updateOne({_id: blogCategory.id}, {count});
+
+}
+async function updateCounterCategory(model, modelDetaileCategory, dataBodyDetailCategory){
+
+    const subtractCategory = await model.findOne({_id: modelDetaileCategory});
+    const sumCategory = await model.findOne({_id: dataBodyDetailCategory});
+    if(!subtractCategory) throw new createHttpError.NotFound("دسته بندی مقاله ای یافت نشد");
+    let subCount = subtractCategory.count;
+    let SubtractCount = subCount - 1;
+    subCount = SubtractCount;
+    let sumCount = sumCategory.count;
+    let newCount = sumCount + 1;
+    sumCount = newCount;
+    await BlogCategoryModel.updateOne({_id: subtractCategory.id}, {count: subCount});
+    await BlogCategoryModel.updateOne({_id: sumCategory.id}, {count: sumCount});
+    
+
+    // const subtractBlog = await BlogCategoryModel.findOne({_id: blog.blog_category_Id});
+    //             const sumBlog = await BlogCategoryModel.findOne({_id:  dataBody.blog_category_Id});
+    //             if(!subtractBlog) throw new createHttpError.NotFound("دسته بندی مقاله ای یافت نشد");
+    //             let subCount = subtractBlog.count;
+    //             let SubtractCount = subCount - 1;
+    //             subCount = SubtractCount;
+    //             let sumCount = sumBlog.count;
+    //             let newCount = sumCount + 1;
+    //             sumCount = newCount;
+    //             await BlogCategoryModel.updateOne({_id: subtractBlog.id}, {count: subCount});
+    //             await BlogCategoryModel.updateOne({_id: sumBlog.id}, {count: sumCount});
+
+}
 
 module.exports = {
     hashString,
@@ -108,6 +187,10 @@ module.exports = {
     getFileFilename,
     getFileSize,
     checkExistOfModelById,
-    checkExistOfModelByTitle
-    
+    checkExistOfModelByTitle,
+    deleteFileInPathArray,
+    deleteFolderInPath,
+    createCounterCategory,
+    updateCounterCategory,
+    deleteFolderInPath
 }

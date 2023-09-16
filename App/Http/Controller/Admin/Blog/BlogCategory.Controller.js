@@ -14,7 +14,12 @@ class BlogCategoryController extends Controller{
             if(req.body.fileUploadPath && req.body.filename){
                 req.body.icon = path.join(requestBody.fileUploadPath, requestBody.filename).replace(/\\/g, "/");
             }
-            await checkExistOfModelByTitle(title, BlogCategoryModel)
+            // await checkExistOfModelByTitle(title, BlogCategoryModel, req.body.icon)
+            const blogCategoryTitle = await BlogCategoryModel.findOne({title});
+            if(blogCategoryTitle){
+                deleteFileInPath(req.body.icon)
+                throw new createHttpError.BadRequest("این عنوان از قبل ثبت شده است، لطفا عنوان دیگری را انتخاب کنید");
+            }
             const icon = req.body.icon;
             const createResault = await BlogCategoryModel.create({title, en_title, parent_Category, icon, showInArchive, priority});
             if(!createResault){

@@ -10,7 +10,11 @@ router.post("/create",
 router.get("/list", BlogController.listOfBlog);
 router.get("/list/:id", BlogController.listOfBlogById);
 router.get("/list_author/:authorId", BlogController.listOfBlogByAuthor);
-
+router.get("/list_blogcategory/:catId", BlogController.listOfBlogByCategory);
+router.patch("/update/:id", 
+    uploadFile("Blogs").fields([{name: "images", maxCount: 10}]), 
+    stringToArray("tags"), BlogController.updateBlog);
+router.delete("/remove/:id", BlogController.removeBlog);
 module.exports = {
     AdminApiBlogRoutes: router
 }
