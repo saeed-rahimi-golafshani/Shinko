@@ -9,6 +9,8 @@
  *          description: the BlogCategory section
  *      -   name: Admin-Blog
  *          description: the Blog section
+ *      -   name: Admin-ProductCategory
+ *          description: the Blog section
  */
 
 

@@ -141,7 +141,7 @@ async function createCounterCategory(model, modelDetaileCategory){
     // count = newCount
     // await BlogCategoryModel.updateOne({_id: blogCategory.id}, {count});
 
-}
+};
 async function updateCounterCategory(model, modelDetaileCategory, dataBodyDetailCategory){
 
     const subtractCategory = await model.findOne({_id: modelDetaileCategory});
@@ -153,8 +153,8 @@ async function updateCounterCategory(model, modelDetaileCategory, dataBodyDetail
     let sumCount = sumCategory.count;
     let newCount = sumCount + 1;
     sumCount = newCount;
-    await BlogCategoryModel.updateOne({_id: subtractCategory.id}, {count: subCount});
-    await BlogCategoryModel.updateOne({_id: sumCategory.id}, {count: sumCount});
+    await model.updateOne({_id: subtractCategory.id}, {count: subCount});
+    await model.updateOne({_id: sumCategory.id}, {count: sumCount});
     
 
     // const subtractBlog = await BlogCategoryModel.findOne({_id: blog.blog_category_Id});
@@ -169,6 +169,13 @@ async function updateCounterCategory(model, modelDetaileCategory, dataBodyDetail
     //             await BlogCategoryModel.updateOne({_id: subtractBlog.id}, {count: subCount});
     //             await BlogCategoryModel.updateOne({_id: sumBlog.id}, {count: sumCount});
 
+};
+async function deleteCounterCategory(model, modelDetaileCategory){
+    const subtractCategory = await model.findOne({_id: modelDetaileCategory});
+    let subCount = subtractCategory.count;
+    let SubtractCount = subCount - 1;
+    subCount = SubtractCount;  
+    await model.updateOne({_id: subtractCategory.id}, {count: subCount});
 }
 
 module.exports = {
@@ -192,5 +199,6 @@ module.exports = {
     deleteFolderInPath,
     createCounterCategory,
     updateCounterCategory,
-    deleteFolderInPath
+    deleteFolderInPath,
+    deleteCounterCategory
 }

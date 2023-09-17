@@ -4,7 +4,7 @@ const { createBlogCategorySchema } = require("../../../Validations/Admin/Blog.Sc
 const Controller = require("../../Controller");
 const path = require("path");
 const { StatusCodes: httpStatus } = require("http-status-codes");
-const { deleteFileInPath, copyObject, deleteInvalidPropertyObjectWithOutBlackList, checkExistOfModelByTitle, checkExistOfModelById } = require("../../../../Utills/Public_Function");
+const { deleteFileInPath, copyObject, deleteInvalidPropertyObjectWithOutBlackList, checkExistOfModelById } = require("../../../../Utills/Public_Function");
 
 class BlogCategoryController extends Controller{
     async createBlogCategory(req, res, next){
@@ -14,7 +14,6 @@ class BlogCategoryController extends Controller{
             if(req.body.fileUploadPath && req.body.filename){
                 req.body.icon = path.join(requestBody.fileUploadPath, requestBody.filename).replace(/\\/g, "/");
             }
-            // await checkExistOfModelByTitle(title, BlogCategoryModel, req.body.icon)
             const blogCategoryTitle = await BlogCategoryModel.findOne({title});
             if(blogCategoryTitle){
                 deleteFileInPath(req.body.icon)
