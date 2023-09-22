@@ -8,6 +8,7 @@ const ProductSchema = new mongoose.Schema({
     tags: {type: [String], default: []},
     product_category_Id: {type: mongoose.Types.ObjectId, required: true, ref: "product_category"},
     Product_Type_Id: {type: mongoose.Types.ObjectId, required: true, ref: "product_type"},
+    file_Id: {type: mongoose.Types.ObjectId, ref: "file"},
     producer: {type: String},
     status: {type: String},
     stock: {type: Number, default: 0},

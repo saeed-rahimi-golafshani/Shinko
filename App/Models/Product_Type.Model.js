@@ -1,7 +1,7 @@
 const { default: mongoose } = require("mongoose");
 
 const ProductTypeSchema = new mongoose.Schema({
-    typeName: {type: String, required: true}
+    type_name: {type: String, required: true}
 });
 
 module.exports = {

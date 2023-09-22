@@ -15,6 +15,11 @@ const createProductCategorySchema = joi.object({
   fileUploadPath: joi.allow()
 });
 
+const createProductTypeSchema = joi.object({
+  type_name: joi.string().trim().min(3).max(30).error(createHttpError.BadRequest("ساختار نوع محصول اشتباه است"))
+}) 
+
 module.exports = {
-  createProductCategorySchema
+  createProductCategorySchema,
+  createProductTypeSchema
 }

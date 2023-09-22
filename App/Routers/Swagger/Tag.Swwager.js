@@ -10,7 +10,9 @@
  *      -   name: Admin-Blog
  *          description: the Blog section
  *      -   name: Admin-ProductCategory
- *          description: the Blog section
+ *          description: the Product section
+ *      -   name: Admin-ProductType
+ *          description: the ProductType section
  */
 
 
