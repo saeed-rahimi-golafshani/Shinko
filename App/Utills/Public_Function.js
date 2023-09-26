@@ -131,7 +131,7 @@ function getFileSize(files){
     return total; 
 };
 async function checkExistOfModelById(id, modelSchema){
-    if(!mongoose.isValidObjectId(id)) throw new createHttpError.BadRequest("ساختار شناسه مورد نظر یافت نشد");
+    if(!mongoose.isValidObjectId(id)) throw new createHttpError.BadRequest("ساختار شناسه مورد نظر اشتباه است");
     const model = await modelSchema.findById(id);
     if(!model) throw new createHttpError.NotFound("گزینه مورد نظر یافت نشد");
     return model
@@ -140,6 +140,13 @@ async function checkExistOfModelByTitle(title, modelSchema, fileAddress){
     const model = await modelSchema.findOne({title});
         if(model){
             deleteFileInPathArray(fileAddress)
+            throw new createHttpError.BadRequest("این عنوان از قبل ثبت شده است، لطفا عنوان دیگری را انتخاب کنید")
+        }
+        return model;
+};
+async function checkExistOfModelByTitleWithoutFile(title, modelSchema){
+    const model = await modelSchema.findOne({title});
+        if(model){
             throw new createHttpError.BadRequest("این عنوان از قبل ثبت شده است، لطفا عنوان دیگری را انتخاب کنید")
         }
         return model;
@@ -218,6 +225,7 @@ module.exports = {
     getFileSize,
     checkExistOfModelById,
     checkExistOfModelByTitle,
+    checkExistOfModelByTitleWithoutFile,
     deleteFileInPathArray,
     deleteFolderInPath,
     createCounterCategory,
