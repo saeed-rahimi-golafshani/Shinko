@@ -8,7 +8,7 @@ const createVariationSchema = joi.object({
 });
 const createVariationOptionSchema = joi.object({
   variation_Id: joi.string().trim().pattern(MONGOID_PATTERN).error(createHttpError.BadRequest("ساختار گزینه مورد نظر اشتباه است")),
-  value: joi.array().trim().min(1).max(30).error(createHttpError.BadRequest("ساختار مقدار مشخصات فنی اشتباه است"))
+  value: joi.array().min(1).max(30).error(createHttpError.BadRequest("ساختار مقدار مشخصات فنی اشتباه است"))
 });
 
 module.exports = {
