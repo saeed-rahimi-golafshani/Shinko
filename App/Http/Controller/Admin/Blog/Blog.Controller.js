@@ -20,7 +20,6 @@ const { FileModel } = require("../../../../Models/Files.Model");
 const { StatusCodes: httpStatus } = require("http-status-codes");
 const { BlogCategoryModel } = require("../../../../Models/Blog_Category.Model");
 const { UserModel } = require("../../../../Models/User.Model");
-const path = require("path"); 
 
 class BlogController extends Controller{
     async createBlog(req, res, next){
@@ -162,7 +161,7 @@ class BlogController extends Controller{
             const fileId = await FileModel.findOne({_id: blog.file_Id});
             if(dataBody.fileUploadPath && dataBody.filename){
                 const files = listOfImageFromRequest(req.files.images || [], dataBody.fileUploadPath);
-                console.log(deleteFileInPathArray(fileId.files));
+                deleteFileInPathArray(fileId.files);
                 await FileModel.updateOne({_id: fileId._id}, {files});
             }
             deleteInvalidPropertyObjectWithOutBlackList(dataBody);

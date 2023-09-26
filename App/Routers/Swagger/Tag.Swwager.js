@@ -13,6 +13,10 @@
  *          description: the Product section
  *      -   name: Admin-ProductType
  *          description: the ProductType section
+ *      -   name: Admin-Product
+ *          description: the Product section
+ *      -   name: Admin-Product2
+ *          description: the Product section
  */
 
 

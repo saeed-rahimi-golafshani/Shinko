@@ -7,6 +7,8 @@ const { BlogCategoryModel } = require("../Models/Blog_Category.Model");
 const { BlogModel } = require("../Models/Blog.Model");
 const { default: mongoose } = require("mongoose");
 const createHttpError = require("http-errors");
+const { ProductCategoryModel } = require("../Models/Product_Category.Model");
+const { ProductModel } = require("../Models/Product.Model");
 
 function hashString(str){
     const salt = bcrypt.genSaltSync(10);
@@ -64,6 +66,17 @@ function deleteInvalidPropertyObjectWithOutBlackList(data = {}){
     });
     return data
 };
+function deleteInvalidPropertyObject(data = {}, blackList = []){
+    const nullishData = ["", " ", 0, NaN, null, undefined];
+    Object.keys(data).forEach(key => {
+        if(blackList.includes(key)) delete data[key];
+        if(nullishData.includes(data[key])) delete data[key];
+        if(typeof data[key] == "string") data[key] = data[key].trim();
+        if(Array.isArray(data[key]) && data[key].length > 0) data[key] = data[key].map(item => item.trim());
+        if(Array.isArray(data[key]) && data[key].length == 0) delete data[key];
+    })
+    return data
+};
 async function getEnTitle(req, model){
     const { id } = req;
     const getEn_title = await model.findOne({_id: id});
@@ -75,11 +88,16 @@ async function uploadFileWithFolderName(req, folderName){
     if(folderName == "BlogCategory"){
       fileName = await getEnTitle(req, BlogCategoryModel)
       return fileName
-    }
-    else if(folderName == "Blogs"){
+    } else if(folderName == "Blogs"){
         fileName = await getEnTitle(req, BlogModel)
         return fileName
-    }
+    } else if(folderName == "ProductCategory"){
+        fileName = await getEnTitle(req, ProductCategoryModel)
+        return fileName
+    } else if(folderName == "Products"){
+        fileName = await getEnTitle(req, ProductModel)
+        return fileName
+    }  
     
 };
 function listOfImageFromRequest(files, fileUploadPath){
@@ -176,7 +194,11 @@ async function deleteCounterCategory(model, modelDetaileCategory){
     let SubtractCount = subCount - 1;
     subCount = SubtractCount;  
     await model.updateOne({_id: subtractCategory.id}, {count: subCount});
-}
+};
+function discountOFPrice(main_price, discount){
+    const price = main_price - ((main_price * discount) / 100);
+    return price
+};
 
 module.exports = {
     hashString,
@@ -185,6 +207,7 @@ module.exports = {
     deleteFileInPath,
     copyObject,
     deleteInvalidPropertyObjectWithOutBlackList,
+    deleteInvalidPropertyObject,
     getEnTitle,
     uploadFileWithFolderName,
     listOfImageFromRequest,
@@ -200,5 +223,6 @@ module.exports = {
     createCounterCategory,
     updateCounterCategory,
     deleteFolderInPath,
-    deleteCounterCategory
+    deleteCounterCategory,
+    discountOFPrice
 }

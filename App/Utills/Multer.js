@@ -24,7 +24,6 @@ async function createRoute(req, file, folderName){
     return directory
   }
 }
-
 const uploadFile = (folderName) => {
     return imageUpload = multer({
       storage: multer.diskStorage({
@@ -55,8 +54,8 @@ const uploadFile = (folderName) => {
      return cb(createHttpError.BadRequest("فرمت تصویر ارسالی صحیح نمیباشد"))       
       }
     })
-  }
+}
 
-  module.exports = {
+module.exports = {
     uploadFile
-  }
+}

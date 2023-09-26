@@ -22,6 +22,10 @@ const ProductSchema = new mongoose.Schema({
     timestamps: true,
     toJSON: {virtuals: true}
 });
+ProductSchema.virtual("filesUrl").get( function(){
+    return this.file_Id.files.map(file => `${process.env.BASEURL}:${process.env.APPLICATION_PORT}/${file}`)
+});
+ProductSchema.index({title: "text", en_title: "text", producer: "text"})
 
 module.exports = {
     ProductModel: mongoose.model("product", ProductSchema)
