@@ -22,6 +22,9 @@ const { ProductCategoryModel } = require("../../../../Models/Product_Category.Mo
 const { StatusCodes: httpStatus } = require("http-status-codes");
 const { FileModel } = require("../../../../Models/Files.Model");
 const { ProductTypeModel } = require("../../../../Models/Product_Type.Model");
+const { VariationModel } = require("../../../../Models/Variation.Model");
+const { VariationOptionModel } = require("../../../../Models/Variation_Option.Model");
+const { ProductConfigrationModel } = require("../../../../Models/Product_Configration.Model");
 const productBlackList = {
   FILE_ID: "file_Id",
   PRICE: "price",
@@ -48,6 +51,7 @@ class ProductController extends Controller{
         discount, 
         send_date, 
         returned } = requestBody;
+      console.log("saeed");
       const fileAddress = listOfImageFromRequest(req.files.images || [], requestBody.fileUploadPath);
       await checkExistOfModelByTitle(title, ProductModel, fileAddress);
       const price = discountOFPrice(main_price, discount);
@@ -92,6 +96,7 @@ class ProductController extends Controller{
       await ProductModel.updateOne({_id: createProduct._id}, {file_Id: fileId});
       //  ------------- count product categhory ------------------------
       await createCounterCategory(ProductCategoryModel, createProduct.product_category_Id);
+
       return res.status(httpStatus.CREATED).json({
         statusCode: httpStatus.CREATED,
         data: {
@@ -301,7 +306,7 @@ class ProductController extends Controller{
     } catch (error) {
       next(error)
     }
-  }
+  } 
 }
 
 module.exports = {

@@ -1,6 +1,6 @@
 const createHttpError = require("http-errors");
 const joi = require("joi");
-const { MONGOID_PATTERN, FILENMAE_ICON_PATTERN } = require("../../../Utills/Constants");
+const { MONGOID_PATTERN, FILENMAE_ICON_PATTERN, FILENMAE_IMAGE_PATTERN } = require("../../../Utills/Constants");
 
 const createProductCategorySchema = joi.object({
   title: joi.string().trim().min(3).max(30).error(createHttpError.BadRequest("ساختار عنوان دسته بندی محصول اشتباه است")),
@@ -34,7 +34,7 @@ const createProductSchema = joi.object({
   discount: joi.number().error(createHttpError.BadRequest(" ساختار تخفیف وارد شده صحیح نمیباشد")),
   send_date: joi.string().trim().min(3).max(30).error(createHttpError.BadRequest("ساختار تاریخ ارسال محصول اشتباه است")),
   returned: joi.boolean().error(createHttpError.BadRequest("ساختار گزینه مورد نظر اشتباه است")),
-  filename: joi.string().pattern(FILENMAE_ICON_PATTERN).error(createHttpError.BadRequest("ساختار فرمت آیکون مورد نظر اشتباه است")),
+  filename: joi.string().pattern(FILENMAE_IMAGE_PATTERN).error(createHttpError.BadRequest("ساختار فرمت آیکون مورد نظر اشتباه است")),
   fileUploadPath: joi.allow()
 });
 
