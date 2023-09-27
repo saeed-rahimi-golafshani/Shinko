@@ -16,19 +16,17 @@ class VariationOptionController extends Controller{
       const checkTitle = await VariationOptionModel.findOne({variation_Id, value});
       if(checkTitle){
         throw new createHttpError.BadRequest("این عنوان از قبل ثبت شده است، لطفا عنوان دیگری را انتخاب کنید")
-      }
+      } 
+
+      const variation = await VariationModel.findOne({_id: variation_Id});
+      const product = await ProductModel.findOne({product_category_Id: variation.product_category_Id});
+      if(!product) throw new createHttpError.NotFound("محصولی یافت نشد، لطفا محصولی ثبت نمایید");     
+
       const variationOption = await VariationOptionModel.create({variation_Id, value});
       if(!variationOption) throw new createHttpError.InternalServerError("خطای سروری");
       
-      // const variation = await VariationModel.findOne({_id: variation_Id});
-      // const productCategoryId = variation.product_category_Id;
-      // if(!productCategoryId) throw new createHttpError.NotFound("دسته بندی محصولی یافت نشد");
-      // const product = await ProductModel.findOne({product_category_Id: productCategoryId});
-      // if(!product) throw new createHttpError.NotFound("محصولی یافت نشد");
-      // const productId = product._id
-      
-      // const createProductConfigration = await ProductConfigrationModel.create({product_Id: productId, variation_option_Id: variationOption._id})
-      // if(!createProductConfigration) throw new createHttpError.InternalServerError("خطای سروری")
+      const createProductConfigration = await ProductConfigrationModel.create({product_Id: product._id, variation_option_Id: variationOption._id})
+      if(!createProductConfigration) throw new createHttpError.InternalServerError("خطای سروری")
 
       return res.status(httpStatus.CREATED).json({
         statusCode: httpStatus.CREATED,
