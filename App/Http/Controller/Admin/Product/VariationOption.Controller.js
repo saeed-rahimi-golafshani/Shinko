@@ -113,7 +113,7 @@ class VariationOptionController extends Controller{
     } catch (error) {
       next(error)
     }
-  }
+  };
 
 }
 
