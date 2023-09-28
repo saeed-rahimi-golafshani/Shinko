@@ -3,7 +3,7 @@ const { VariationOptionModel } = require("../../../../Models/Variation_Option.Mo
 const { createVariationOptionSchema } = require("../../../Validations/Admin/Variation.Schema");
 const Controller = require("../../Controller");
 const { StatusCodes: httpStatus } = require("http-status-codes");
-const { checkExistOfModelById } = require("../../../../Utills/Public_Function");
+const { checkExistOfModelById, copyObject, deleteInvalidPropertyObjectWithOutBlackList } = require("../../../../Utills/Public_Function");
 const { VariationModel } = require("../../../../Models/Variation.Model");
 const { ProductModel } = require("../../../../Models/Product.Model");
 const { ProductConfigrationModel } = require("../../../../Models/Product_Configration.Model");
@@ -78,6 +78,24 @@ class VariationOptionController extends Controller{
       next(error)
     }
   };
+  async updateVariationOption(req, res, next){
+    try {
+      const { id } = req.params;
+      const checkId = await checkExistOfModelById(id, VariationOptionModel);
+      const requestData = copyObject(req.body);
+      deleteInvalidPropertyObjectWithOutBlackList(requestData);
+      const updateResault = await VariationOptionModel.updateOne({_id: checkId._id}, {$set: requestData});
+      if(updateResault.modifiedCount == 0) throw new createHttpError.InternalServerError("خطای سروری");
+      return res.status(httpStatus.OK).json({
+        statusCode: httpStatus.OK,
+        data: {
+          message: "مقدار مشخصات فنی با موفقیت به روز رسانی شد"
+        }
+      });
+     } catch (error) {
+      next(error)
+    }
+  }
 
 }
 
