@@ -5,6 +5,7 @@ const router = require("express").Router();
 router.post("/create", stringToArray("value"), VariationOptionController.createVariationOption);
 router.get("/list/:id", VariationOptionController.listOfVariationOptionById);
 router.patch("/update/:id", stringToArray("value"), VariationOptionController.updateVariationOption);
+router.delete("/delete/:id", VariationOptionController.deleteVariationOption);
 
 module.exports = {
   AdminApiVariationOptionsRoutes: router
