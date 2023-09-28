@@ -114,6 +114,45 @@ class VariationOptionController extends Controller{
       next(error)
     }
   };
+  async listOfProductConfigrationByProId(req, res, next){
+    try {
+      const { productId } = req.params;
+      const checkId = await checkExistOfModelById(productId, ProductModel);
+      const productConfig = await ProductConfigrationModel.aggregate([
+        {
+          $match: {
+            product_Id: checkId._id
+          }
+        },
+        {
+          $lookup: {
+            from: "products",
+            localField: "product_Id",
+            foreignField: "_id",
+            as: "product_Id"
+          }
+        },
+        {
+          $lookup: {
+            from: "variation_options",
+            localField: "variation_option_Id",
+            foreignField: "_id",
+            as: "variation_option_Id"
+          }
+        }, 
+      ])
+
+      if(!productConfig) throw new createHttpError.NotFound("گزینه مورد نظر یافت نشد");
+      return res.status(httpStatus.OK).json({
+        statusCode: httpStatus.OK,
+        data: {
+          productConfig
+        }
+      });
+    } catch (error) {
+      next(error)
+    }
+  }
 
 }
 
