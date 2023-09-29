@@ -101,7 +101,7 @@ class VariationOptionController extends Controller{
       const { id } = req.params;
       const checkId = await checkExistOfModelById(id, VariationOptionModel);
       const deleteResault = await VariationOptionModel.deleteOne({_id: checkId._id});
-      if(deleteResault.deletedCount == 0) throw new createHttpError.InternalServerError("خطای سروری")
+      if(deleteResault.deletedCount == 0) throw new createHttpError.InternalServerError("خطای سروری");
       const deleteProConfigration = await ProductConfigrationModel.deleteOne({variation_option_Id: checkId._id});
       if(deleteProConfigration.deletedCount == 0) throw new createHttpError.InternalServerError("خطای سروری");
       return res.status(httpStatus.OK).json({

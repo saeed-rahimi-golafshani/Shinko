@@ -297,6 +297,8 @@ class ProductController extends Controller{
       const deleteResaultProduct = await ProductModel.deleteOne({_id: product._id});
       const deleteResaultFile = await FileModel.deleteOne({_id: file._id});
       if(deleteResaultProduct.deletedCount == 0 || deleteResaultFile.deletedCount == 0) throw new createHttpError.InternalServerError("خطای سروری");
+      const deleteProConfigration = await ProductConfigrationModel.deleteOne({product_Id: product._id});
+      if(deleteProConfigration.deletedCount == 0) throw new createHttpError.InternalServerError("خطای سروری");
       return res.status(httpStatus.OK).json({
         statusCode: httpStatus.OK,
         data: {
