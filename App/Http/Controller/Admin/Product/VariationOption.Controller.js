@@ -118,29 +118,34 @@ class VariationOptionController extends Controller{
     try {
       const { productId } = req.params;
       const checkId = await checkExistOfModelById(productId, ProductModel);
-      const productConfig = await ProductConfigrationModel.aggregate([
-        {
-          $match: {
-            product_Id: checkId._id
-          }
-        },
-        {
-          $lookup: {
-            from: "products",
-            localField: "product_Id",
-            foreignField: "_id",
-            as: "product_Id"
-          }
-        },
-        {
-          $lookup: {
-            from: "variation_options",
-            localField: "variation_option_Id",
-            foreignField: "_id",
-            as: "variation_option_Id"
-          }
-        }, 
-      ])
+      const productConfig = await ProductConfigrationModel.find({product_Id: checkId._id}, {__v: 0}) .lean().populate([
+        {path: "product_Id", select: {title: 1}},
+        {path: "variation_option_Id", populate: {path: "variation_Id", model: "variation", select: {name: 1}}, select: {value: 1}}
+      ]);
+
+      // const productConfig = await ProductConfigrationModel.aggregate([
+      //   {
+      //     $match: {
+      //       product_Id: checkId._id
+      //     }
+      //   },
+      //   {
+      //     $lookup: {
+      //       from: "products",
+      //       localField: "product_Id",
+      //       foreignField: "_id",
+      //       as: "product_Id"
+      //     }
+      //   },
+      //   {
+      //     $lookup: {
+      //       from: "variation_options",
+      //       localField: "variation_option_Id",
+      //       foreignField: "_id",
+      //       as: "variation_option_Id"
+      //     }
+      //   }, 
+      // ])
 
       if(!productConfig) throw new createHttpError.NotFound("گزینه مورد نظر یافت نشد");
       return res.status(httpStatus.OK).json({
@@ -152,7 +157,7 @@ class VariationOptionController extends Controller{
     } catch (error) {
       next(error)
     }
-  }
+  };
 
 }
 
