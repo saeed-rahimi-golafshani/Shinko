@@ -9,6 +9,7 @@ const { default: mongoose } = require("mongoose");
 const createHttpError = require("http-errors");
 const { ProductCategoryModel } = require("../Models/Product_Category.Model");
 const { ProductModel } = require("../Models/Product.Model");
+const { OfferNameModel } = require("../Models/OfferName.Model");
 
 function hashString(str){
     const salt = bcrypt.genSaltSync(10);
@@ -79,8 +80,9 @@ function deleteInvalidPropertyObject(data = {}, blackList = []){
 };
 async function getEnTitle(req, model){
     const { id } = req;
+    let fileName;
     const getEn_title = await model.findOne({_id: id});
-    const fileName = getEn_title.en_title;
+    fileName = getEn_title.en_title;
     return fileName
 };
 async function uploadFileWithFolderName(req, folderName){
@@ -96,6 +98,9 @@ async function uploadFileWithFolderName(req, folderName){
         return fileName
     } else if(folderName == "Products"){
         fileName = await getEnTitle(req, ProductModel)
+        return fileName
+    }  else if(folderName == "OfferName"){
+        fileName = await getEnTitle(req, OfferNameModel)
         return fileName
     }  
     

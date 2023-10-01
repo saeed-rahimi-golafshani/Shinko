@@ -53,12 +53,21 @@ const crateProductConfigPromotionSchema = joi.object({
   end_date: joi.string().trim().error(createHttpError.BadRequest(" ساختار پایان زمان تخفیف صحیح نمیباشد")),
   name: joi.string().trim().error(createHttpError.BadRequest("ساختار متن تخفیف اشتباه است")),
   description: joi.string().trim().error(createHttpError.BadRequest("ساختار توضیحات تخفیف اشتباه است"))
-})
+});
+const crateOfferNameSchema = joi.object({
+  name: joi.string().trim().error(createHttpError.BadRequest("ساختار نام تخفیف اشتباه است")),
+  en_title: joi.string().trim().min(3).max(30).error(createHttpError.BadRequest("ساختار عنوان انگلیسی تخفیف اشتباه است")),
+  filename: joi.string().pattern(FILENMAE_ICON_PATTERN).error(createHttpError.BadRequest("ساختار فرمت آیکون مورد نظر اشتباه است")),
+  fileUploadPath: joi.allow()
+});
+
+
 
 module.exports = {
   createProductCategorySchema,
   createProductTypeSchema,
   createProductSchema,
   crateProductConfigAdvanceSchema,
-  crateProductConfigPromotionSchema
+  crateProductConfigPromotionSchema,
+  crateOfferNameSchema
 }
