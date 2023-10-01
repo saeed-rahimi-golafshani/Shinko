@@ -206,6 +206,15 @@ function discountOFPrice(main_price, discount){
     const price = main_price - ((main_price * discount) / 100);
     return price
 };
+function getTime(milliseconds){
+        let time = new Date(milliseconds);
+        let hours = time.getHours();
+        let minutes = time.getMinutes();
+        let seconds = time.getSeconds()
+        // let milliseconds = time.getUTCMilliseconds();
+        return hours + ":" + minutes + ":" + seconds 
+        //+ ":" + milliseconds;
+}
 
 module.exports = {
     hashString,
@@ -232,5 +241,6 @@ module.exports = {
     updateCounterCategory,
     deleteFolderInPath,
     deleteCounterCategory,
-    discountOFPrice
+    discountOFPrice,
+    getTime
 }

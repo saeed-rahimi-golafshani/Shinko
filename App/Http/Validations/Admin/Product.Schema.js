@@ -43,11 +43,22 @@ const crateProductConfigAdvanceSchema = joi.object({
   stock: joi.number().error(createHttpError.BadRequest(" ساختار تعداد محصول صحیح نمیباشد")),
   main_price: joi.number().error(createHttpError.BadRequest(" ساختار قیمت اصلی وارد شده صحیح نمیباشد")),
   discount: joi.number().error(createHttpError.BadRequest(" ساختار تخفیف وارد شده صحیح نمیباشد")),
+});
+const crateProductConfigPromotionSchema = joi.object({
+  product_Id: joi.string().trim().pattern(MONGOID_PATTERN).error(createHttpError.BadRequest("ساختار شناسه محصول اشتباه است")),
+  variation_option_Id: joi.string().trim().pattern(MONGOID_PATTERN).error(createHttpError.BadRequest("ساختار شناسه گزینه مورد نظر اشتباه است")),
+  stock: joi.number().error(createHttpError.BadRequest(" ساختار تعداد محصول صحیح نمیباشد")),
+  main_price: joi.number().error(createHttpError.BadRequest(" ساختار قیمت اصلی وارد شده صحیح نمیباشد")),
+  discount: joi.number().error(createHttpError.BadRequest(" ساختار تخفیف وارد شده صحیح نمیباشد")),
+  end_date: joi.string().trim().error(createHttpError.BadRequest(" ساختار پایان زمان تخفیف صحیح نمیباشد")),
+  name: joi.string().trim().error(createHttpError.BadRequest("ساختار متن تخفیف اشتباه است")),
+  description: joi.string().trim().error(createHttpError.BadRequest("ساختار توضیحات تخفیف اشتباه است"))
 })
 
 module.exports = {
   createProductCategorySchema,
   createProductTypeSchema,
   createProductSchema,
-  crateProductConfigAdvanceSchema
+  crateProductConfigAdvanceSchema,
+  crateProductConfigPromotionSchema
 }
