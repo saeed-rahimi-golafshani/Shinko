@@ -35,7 +35,22 @@ class OfferNameController extends Controller{
     } catch (error) {
       next(error)
     }
-  }
+  };
+  async listOfferName(req, res, next){
+    try {
+      const offerName = await OfferNameModel.find({}, {__v: 0});
+      if(!offerName) throw new createHttpError.NotFound("گزینه مورد نظر یافت نشد")
+      return res.status(httpStatus.OK).json({
+        statusCode: httpStatus.OK,
+        data: {
+          offerName
+        }
+      });
+    } catch (error) {
+      next(error)
+    }
+  };
+  
 }
 
 module.exports = {
