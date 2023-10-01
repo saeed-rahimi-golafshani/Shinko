@@ -1,6 +1,6 @@
 const createHttpError = require("http-errors");
 const { OfferNameModel } = require("../../../../Models/OfferName.Model");
-const { deleteFileInPath } = require("../../../../Utills/Public_Function");
+const { deleteFileInPath, checkExistOfModelById, copyObject, deleteInvalidPropertyObjectWithOutBlackList } = require("../../../../Utills/Public_Function");
 const { crateOfferNameSchema } = require("../../../Validations/Admin/Product.Schema");
 const Controller = require("../../Controller");
 const path = require("path");
@@ -50,6 +50,44 @@ class OfferNameController extends Controller{
       next(error)
     }
   };
+  async listOfferNameById(req, res, next){
+    try {
+      const { id } = req.params;
+      const checkId = await checkExistOfModelById(id, OfferNameModel);
+      const offerNames = await OfferNameModel.findOne({_id: checkId._id}, {__v: 0});
+      if(!offerNames) throw new createHttpError.NotFound("گزینه مورد نظر یافت نشد")
+      return res.status(httpStatus.OK).json({
+        statusCode: httpStatus.OK,
+        data: {
+          offerNames
+        }
+      });
+    } catch (error) {
+      next(error)
+    }
+  };
+  async updateOfferName(req, res, next){
+    try {
+      const { id } = req.params;
+      const checkId = await checkExistOfModelById(id, OfferNameModel);
+      const requestData = copyObject(req.body);
+      if(requestData.fileUploadPath && requestData.filename){
+        deleteFileInPath(checkId.icon);
+        requestData.icon = path.join(requestData.fileUploadPath, requestData.filename).replace(/\\/g, "/");
+      };
+      deleteInvalidPropertyObjectWithOutBlackList(requestData);
+      const updateResault = await OfferNameModel.updateOne({_id: checkId.id}, {$set: requestData});
+      if(updateResault.modifiedCount == 0) throw new createHttpError.InternalServerError("خطای سروری");
+      return res.status(httpStatus.OK).json({
+        statusCode: httpStatus.OK,
+        data: {
+          message: "به روز رسانی با موفقیت انجام شد"
+        }
+      });
+    } catch (error) {
+      next(error)
+    }
+  }
   
 }
 
