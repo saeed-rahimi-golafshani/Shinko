@@ -7,6 +7,7 @@ const { checkExistOfModelById, copyObject, deleteInvalidPropertyObjectWithOutBla
 const { VariationModel } = require("../../../../Models/Variation.Model");
 const { ProductModel } = require("../../../../Models/Product.Model");
 const { ProductConfigrationModel } = require("../../../../Models/Product_Configration.Model");
+const { ProductConfigAdvancedModel } = require("../../../../Models/Product_Config_Advanced.Model");
 
 class VariationOptionController extends Controller{
   async createVariationOption(req, res, next){
@@ -26,7 +27,7 @@ class VariationOptionController extends Controller{
       if(!variationOption) throw new createHttpError.InternalServerError("خطای سروری");
       
       const createProductConfigration = await ProductConfigrationModel.create({product_Id: product._id, variation_option_Id: variationOption._id})
-      if(!createProductConfigration) throw new createHttpError.InternalServerError("خطای سروری")
+      if(!createProductConfigration) throw new createHttpError.InternalServerError("خطای سروری");
 
       return res.status(httpStatus.CREATED).json({
         statusCode: httpStatus.CREATED,
@@ -99,11 +100,14 @@ class VariationOptionController extends Controller{
   async deleteVariationOption(req, res, next){
     try {
       const { id } = req.params;
-      const checkId = await checkExistOfModelById(id, VariationOptionModel);
-      const deleteResault = await VariationOptionModel.deleteOne({_id: checkId._id});
+      const checkVariationoptionId = await checkExistOfModelById(id, VariationOptionModel);
+      const deleteResault = await VariationOptionModel.deleteOne({_id: checkVariationoptionId._id});
       if(deleteResault.deletedCount == 0) throw new createHttpError.InternalServerError("خطای سروری");
-      const deleteProConfigration = await ProductConfigrationModel.deleteOne({variation_option_Id: checkId._id});
+      const deleteProConfigration = await ProductConfigrationModel.deleteOne({variation_option_Id: checkVariationoptionId._id});
       if(deleteProConfigration.deletedCount == 0) throw new createHttpError.InternalServerError("خطای سروری");
+      // ----------------------------------
+      const deleteProductConfigAdvance = await ProductConfigAdvancedModel.deleteMany({variation_option_Id: checkVariationoptionId._id});
+      if(deleteProductConfigAdvance.deletedCount == 0) throw new createHttpError.InternalServerError("خطای سروری");
       return res.status(httpStatus.OK).json({
         statusCode: httpStatus.OK,
         data: {

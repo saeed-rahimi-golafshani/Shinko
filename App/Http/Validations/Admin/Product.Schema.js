@@ -37,9 +37,17 @@ const createProductSchema = joi.object({
   filename: joi.string().pattern(FILENMAE_IMAGE_PATTERN).error(createHttpError.BadRequest("ساختار فرمت آیکون مورد نظر اشتباه است")),
   fileUploadPath: joi.allow()
 });
+const crateProductConfigAdvanceSchema = joi.object({
+  product_Id: joi.string().trim().pattern(MONGOID_PATTERN).error(createHttpError.BadRequest("ساختار شناسه محصول اشتباه است")),
+  variation_option_Id: joi.string().trim().pattern(MONGOID_PATTERN).error(createHttpError.BadRequest("ساختار شناسه گزینه مورد نظر اشتباه است")),
+  stock: joi.number().error(createHttpError.BadRequest(" ساختار تعداد محصول صحیح نمیباشد")),
+  main_price: joi.number().error(createHttpError.BadRequest(" ساختار قیمت اصلی وارد شده صحیح نمیباشد")),
+  discount: joi.number().error(createHttpError.BadRequest(" ساختار تخفیف وارد شده صحیح نمیباشد")),
+})
 
 module.exports = {
   createProductCategorySchema,
   createProductTypeSchema,
-  createProductSchema
+  createProductSchema,
+  crateProductConfigAdvanceSchema
 }
