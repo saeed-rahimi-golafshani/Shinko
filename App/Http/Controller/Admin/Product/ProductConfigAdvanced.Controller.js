@@ -130,8 +130,3 @@ class ProductConfigAdvanceController extends Controller{
 module.exports = {
   ProductConfigAdvanceController: new ProductConfigAdvanceController()
 }
-
-
-
-
-
