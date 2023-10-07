@@ -51,7 +51,6 @@ class ProductController extends Controller{
         discount, 
         send_date, 
         returned } = requestBody;
-      console.log("saeed");
       const fileAddress = listOfImageFromRequest(req.files.images || [], requestBody.fileUploadPath);
       await checkExistOfModelByTitle(title, ProductModel, fileAddress);
       const price = discountOFPrice(main_price, discount);
@@ -76,15 +75,15 @@ class ProductController extends Controller{
       if(!createProduct) throw new createHttpError.InternalServerError("خطای سروری");
       // ----------------------- file model -------------------
       const type_files = listOfImageFromRequest(req.files.images || [], requestBody.fileUploadPath);
-      const type = "product";
       const orginalName = getFileOrginalname(req.files['images']);
       const fileEncoding = getFileEncoding(req.files['images']);
       const mimeType = getFileMimetype(req.files['images']);
       const fileName = getFileFilename(req.files['images']);
       const fileSize = getFileSize(req.files['images']);
       const fileDetailes = await FileModel.create({
+        type_Id: createProduct._id,
         files: type_files, 
-        type,
+        type: "product",
         originalnames: orginalName,
         encoding: fileEncoding,
         mimetype: mimeType,
@@ -263,11 +262,27 @@ class ProductController extends Controller{
       const { id } = req.params;
       const product = await checkExistOfModelById(id, ProductModel);
       const dataBody = copyObject(req.body);
-      const fileId = await FileModel.findOne({_id: product.file_Id});
+      const fileId = await FileModel.findOne({type_Id: product._id});
       if(dataBody.fileUploadPath && dataBody.filename){
         const files = listOfImageFromRequest(req.files.images || [], dataBody.fileUploadPath);
+        const orginalName = getFileOrginalname(req.files['images']);
+        const fileEncoding = getFileEncoding(req.files['images']);
+        const mimeType = getFileMimetype(req.files['images']);
+        const fileName = getFileFilename(req.files['images']);
+        const fileSize = getFileSize(req.files['images']);
         deleteFileInPathArray(fileId.files);
-        await FileModel.updateOne({_id: fileId._id}, {files});
+        await FileModel.updateOne(
+          {
+            _id: fileId._id
+          }, 
+          {
+            files, 
+            originalnames: orginalName, 
+            encoding: fileEncoding,
+            mimetype: mimeType,
+            filename: fileName, 
+            size: fileSize
+          });
       }
       let blackFeildList = Object.values(productBlackList);
       deleteInvalidPropertyObject(dataBody, blackFeildList);
@@ -291,14 +306,14 @@ class ProductController extends Controller{
     try {
       const { id } = req.params;
       const product = await checkExistOfModelById(id, ProductModel);
-      const file = await FileModel.findOne({_id: product.file_Id});
+      const file = await FileModel.findOne({type_Id: product._id});
       if(!file || !product) throw new createHttpError.NotFound("محصولی یافت نشد");
       deleteFolderInPath(file.files);
       const deleteResaultProduct = await ProductModel.deleteOne({_id: product._id});
       const deleteResaultFile = await FileModel.deleteOne({_id: file._id});
       if(deleteResaultProduct.deletedCount == 0 || deleteResaultFile.deletedCount == 0) throw new createHttpError.InternalServerError("خطای سروری");
-      const deleteProConfigration = await ProductConfigrationModel.deleteOne({product_Id: product._id});
-      if(deleteProConfigration.deletedCount == 0) throw new createHttpError.InternalServerError("خطای سروری");
+      // const deleteProConfigration = await ProductConfigrationModel.deleteOne({product_Id: product._id});
+      // if(deleteProConfigration.deletedCount == 0) throw new createHttpError.InternalServerError("خطای سروری");
       return res.status(httpStatus.OK).json({
         statusCode: httpStatus.OK,
         data: {

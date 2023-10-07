@@ -26,7 +26,7 @@ class VariationOptionController extends Controller{
       const variationOption = await VariationOptionModel.create({variation_Id, value});
       if(!variationOption) throw new createHttpError.InternalServerError("خطای سروری");
       
-      const createProductConfigration = await ProductConfigrationModel.create({product_Id: product._id, variation_option_Id: variationOption._id})
+      const createProductConfigration = await ProductConfigrationModel.create({product_Id: product._id, variation_option_Id: variationOption._id});
       if(!createProductConfigration) throw new createHttpError.InternalServerError("خطای سروری");
 
       return res.status(httpStatus.CREATED).json({

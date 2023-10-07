@@ -42,16 +42,15 @@ class BlogController extends Controller{
 
             // --------- craete file model ------------------
             const type_files = listOfImageFromRequest(req.files.images || [], requestBody.fileUploadPath);
-            const type = "blog";
-            // const type_Id = blog._id;
             const orginalName = getFileOrginalname(req.files['images']);
             const fileEncoding = getFileEncoding(req.files['images']);
             const mimeType = getFileMimetype(req.files['images']);
             const fileName = getFileFilename(req.files['images']);
             const fileSize = getFileSize(req.files['images']);
             const fileDetailes = await FileModel.create({
-                files: type_files, 
-                type,
+                type_Id: blog._id,
+                files: type_files,
+                type: "blog",
                 originalnames: orginalName,
                 encoding: fileEncoding,
                 mimetype: mimeType,
@@ -82,9 +81,7 @@ class BlogController extends Controller{
     };
     async listOfBlog(req, res, next){
         try {
-            const list_of_blog = await BlogModel.find({}).populate([
-                {path: "file_Id", select: {files: 1}}
-            ]);
+            const list_of_blog = await BlogModel.find({})
             if(!list_of_blog) throw new createHttpError.NotFound("بلاگی یافت نشد");
             return res.status(httpStatus.OK).json({
                 statusCode: httpStatus.OK,
@@ -100,9 +97,7 @@ class BlogController extends Controller{
         try {
             const { id } = req.params;
             const blog = await checkExistOfModelById(id, BlogModel);
-            const listOfblog = await BlogModel.findOne({_id: blog._id}).populate([
-                {path: "file_Id", select: {files: 1}}
-            ]);
+            const listOfblog = await BlogModel.findOne({_id: blog._id})
             if(!listOfblog) throw new createHttpError.NotFound("بلاگی یافت نشد");
             return res.status(httpStatus.OK).json({
                 statusCode: httpStatus.OK,
@@ -119,9 +114,7 @@ class BlogController extends Controller{
         try {
             const { authorId } = req.params;
             const author = await checkExistOfModelById(authorId, UserModel);
-            const listOfBlog = await BlogModel.find({author: author._id}).populate([
-                {path: "file_Id", select: {files: 1}}
-            ]);
+            const listOfBlog = await BlogModel.find({author: author._id});
             if(!listOfBlog) throw new createHttpError.NotFound("بلاگی وجود ندارد");
             return res.status(httpStatus.OK).json({
                 statusCode: httpStatus.OK,
@@ -158,11 +151,27 @@ class BlogController extends Controller{
             const { id } = req.params;
             const blog = await checkExistOfModelById(id, BlogModel);
             const dataBody = copyObject(req.body);
-            const fileId = await FileModel.findOne({_id: blog.file_Id});
+            const fileId = await FileModel.findOne({type_Id: blog._id});
             if(dataBody.fileUploadPath && dataBody.filename){
                 const files = listOfImageFromRequest(req.files.images || [], dataBody.fileUploadPath);
+                const orginalName = getFileOrginalname(req.files['images']);
+                const fileEncoding = getFileEncoding(req.files['images']);
+                const mimeType = getFileMimetype(req.files['images']);
+                const fileName = getFileFilename(req.files['images']);
+                const fileSize = getFileSize(req.files['images']);
                 deleteFileInPathArray(fileId.files);
-                await FileModel.updateOne({_id: fileId._id}, {files});
+                await FileModel.updateOne(
+                    {
+                      _id: fileId._id
+                    }, 
+                    {
+                      files, 
+                      originalnames: orginalName, 
+                      encoding: fileEncoding,
+                      mimetype: mimeType,
+                      filename: fileName, 
+                      size: fileSize
+                    });
             }
             deleteInvalidPropertyObjectWithOutBlackList(dataBody);
             if(dataBody.blog_category_Id){
@@ -184,7 +193,7 @@ class BlogController extends Controller{
         try {
             const { id } = req.params;
             const blog = await checkExistOfModelById(id, BlogModel);
-            const file = await FileModel.findOne({_id: blog.file_Id});
+            const file = await FileModel.findOne({type_Id: blog._id});
             if(!file || !blog) throw new createHttpError.NotFound("مقاله ای یافت نشد")
             deleteFolderInPath(file.files);
             const deleteResaultBlog = await BlogModel.deleteOne({_id: blog._id});

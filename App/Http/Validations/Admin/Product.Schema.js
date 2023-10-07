@@ -19,7 +19,7 @@ const createProductTypeSchema = joi.object({
 });
 const createProductSchema = joi.object({
   title: joi.string().trim().min(3).max(100).error(createHttpError.BadRequest("ساختار عنوان محصول اشتباه است")),
-  en_title: joi.string().trim().min(3).max(50).error(createHttpError.BadRequest("ساختار عنوان انگلیسی محصول اشتباه است")),
+  en_title: joi.string().trim().min(3).max(100).error(createHttpError.BadRequest("ساختار عنوان انگلیسی محصول اشتباه است")),
   text: joi.string().error(createHttpError.BadRequest("ساختار متن محصول اشتباه است")),
   short_text: joi.string().error(createHttpError.BadRequest("ساختار متن کوتاه محصول اشتباه است")),
   tags: joi.array().min(0).max(10).error(createHttpError.BadRequest("ساختار تگ یا برچسب اشتباه است")),
