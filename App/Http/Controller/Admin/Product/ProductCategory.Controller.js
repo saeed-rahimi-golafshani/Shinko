@@ -85,7 +85,6 @@ class ProductCategoryController extends Controller{
   async listOfProductCategoryById(req, res, next){
     try {
       const { id } = req.params;
-      console.log("saeed");
       const checkId = await checkExistOfModelById(id, ProductCategoryModel);
       const productCategory = await ProductCategoryModel.findOne({_id: checkId.id});
       if(!productCategory) throw new createHttpError.NotFound("دسته بندی ای یافت نشد");

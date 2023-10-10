@@ -9,8 +9,9 @@ const createHttpError = require("http-errors");
 const { ProductCategoryModel } = require("../Models/Product_Category.Model");
 const { ProductModel } = require("../Models/Product.Model");
 const { OfferNameModel } = require("../Models/OfferName.Model");
-const moment = require("jalali-moment");
+// const moment = require("jalali-moment");
 const momentMJ = require("moment-jalali");
+const { BrandModel } = require("../Models/Brand.Model");
 
 function hashString(str){
     const salt = bcrypt.genSaltSync(10);
@@ -112,6 +113,9 @@ async function uploadFileWithFolderName(req, folderName){
         return fileName
     }  else if(folderName == "OfferName"){
         fileName = await getEnTitle(req, OfferNameModel)
+        return fileName
+    }  else if(folderName == "Brand"){
+        fileName = await getEnTitle(req, BrandModel)
         return fileName
     }  
     

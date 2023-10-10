@@ -5,8 +5,17 @@ const BrandSchema = new mongoose.Schema({
     en_title: {type: String, required: true},
     description: {type: String},
     tags: {type: [String], default: []},
-    show: {type: Boolean, default: false}
+    show: {type: Boolean, default: false},
+    icon: {type: String},
+    count: {type: Number, default: 0}
+}, {
+    toJSON: {virtuals: true}
 });
+
+BrandSchema.virtual("iconUrl").get(function(){
+    return `${process.env.BASEURL}:${process.env.APPLICATION_PORT}/${this.icon}`
+});
+BrandSchema.index({title: "text", en_title: "text"});
 
 module.exports = {
     BrandModel: mongoose.model("brand", BrandSchema)
