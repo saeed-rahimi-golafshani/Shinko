@@ -1,5 +1,4 @@
 const bcrypt = require("bcrypt");
-const moment = require("moment-jalali");
 const path = require("path");
 const fs = require("fs");
 const { unlink } = require("fs/promises")
@@ -10,13 +9,25 @@ const createHttpError = require("http-errors");
 const { ProductCategoryModel } = require("../Models/Product_Category.Model");
 const { ProductModel } = require("../Models/Product.Model");
 const { OfferNameModel } = require("../Models/OfferName.Model");
+const moment = require("jalali-moment");
+const momentMJ = require("moment-jalali");
 
 function hashString(str){
     const salt = bcrypt.genSaltSync(10);
     return bcrypt.hashSync(str, salt)
 };
 function persionDateGenerator(){ 
-    return moment().format("jYYYYjMMjDDHHmmssSS");
+    return momentMJ().format("jYYYYjMMjDDHHmmssSS");
+};
+function convertPersionToGregorianEndDate(date){ 
+    return momentMJ(`${date} 23:59:59`, 'jYYYY/jM/jD HH:mm').format('YYYY-MM-DD HH:mm:ss');
+};
+function convertPersionToGregorianStartDate(date){ 
+    return momentMJ(`${date} 00:00:00.00`, 'jYYYY/jMM/jDD HH:mm').format('YYYY-MM-DD HH:mm:ss');
+};
+function convertGregorianToPersionToday(){ 
+    const date = new Date();
+    return momentMJ(date).format('YYYY-MM-DD HH:mm:ss');
 };
 function randomNumberFiveDigitsGenerator(){
     return (Math.floor(Math.random() * 90000) + 10000);
@@ -247,5 +258,9 @@ module.exports = {
     deleteFolderInPath,
     deleteCounterCategory,
     discountOFPrice,
-    getTime
+    getTime,
+    convertPersionToGregorianEndDate,
+    convertPersionToGregorianStartDate,
+    convertGregorianToPersionToday
+
 }

@@ -87,7 +87,7 @@ class OfferNameController extends Controller{
     } catch (error) {
       next(error)
     }
-  }
+  };
   
 }
 
