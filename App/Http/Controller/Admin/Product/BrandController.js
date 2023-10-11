@@ -4,7 +4,9 @@ const { deleteFileInPath, checkExistOfModelById, copyObject, deleteInvalidProper
 const { createBrandSchema } = require("../../../Validations/Admin/Product.Schema");
 const Controller = require("../../Controller");
 const path = require("path");
-const { StatusCodes: httpStatus } = require("http-status-codes")
+const { StatusCodes: httpStatus } = require("http-status-codes");
+const { ProductModel } = require("../../../../Models/Product.Model");
+const { BrandProductCategoryModel } = require("../../../../Models/Brand_ProductCategory.Model");
 
 class BrandConteroller extends Controller{
   async createBrand(req, res, next){
@@ -137,7 +139,72 @@ class BrandConteroller extends Controller{
     } catch (error) {
       next(error)
     }
-  }
+  };
+  async listOfProductByBrand(req, res, next){
+    try {
+      const { brandId } = req.params;
+      const checkId = await checkExistOfModelById(brandId, BrandModel);
+      const findProductByBrand = await ProductModel.find({brand_Id: checkId._id}).populate([
+        {path: "file_Id", select: {files: 1}},
+        {path: "product_category_Id", select: {title: 1}},
+        {path: "Product_Type_Id", select: {type_name: 1}},
+        {path: "brand_Id", select: {title: 1}},
+        {path: "brand_productCat_Id", select: {title: 1}}
+      ]);
+      if(!findProductByBrand) throw new createHttpError.NotFound("محصولی با برند مورد نظر یافت نشد");
+      return res.status(httpStatus.OK).json({
+        findProductByBrand
+      })
+    } catch (error) {
+      next(error)
+    }
+  };
+  async listOfProductByBrandOfCount(req, res, next){
+    try {
+      const { brandId } = req.params;
+      const checkId = await checkExistOfModelById(brandId, BrandModel);
+      const findBrandByCount = await BrandModel.findOne({_id: checkId._id});
+      if(!findBrandByCount) throw new createHttpError.NotFound("محصولی با برند مورد نظر یافت نشد");
+      return res.status(httpStatus.OK).json({
+        count: findBrandByCount.count
+      })
+    } catch (error) {
+      next(error)
+    }
+  };
+  async listOfProductByBrandOfProCat(req, res, next){
+    try {
+      const { brandProCatId } = req.params;
+      const checkId = await checkExistOfModelById(brandProCatId, BrandProductCategoryModel);
+      const findProductByBrandProCat = await ProductModel.find({brand_productCat_Id: checkId._id}).populate([
+        {path: "file_Id", select: {files: 1}},
+        {path: "product_category_Id", select: {title: 1}},
+        {path: "Product_Type_Id", select: {type_name: 1}},
+        {path: "brand_Id", select: {title: 1}},
+        {path: "brand_productCat_Id", select: {title: 1}}
+      ]);
+      if(!findProductByBrandProCat) throw new createHttpError.NotFound("محصولی با برند مورد نظر یافت نشد");
+      return res.status(httpStatus.OK).json({
+        findProductByBrandProCat
+      })
+    } catch (error) {
+      next(error)
+    }
+  };
+  async listOfProductByBrandProCatOfCount(req, res, next){
+    try {
+      const { brandProCatId } = req.params;
+      const checkId = await checkExistOfModelById(brandProCatId, BrandProductCategoryModel);
+      const findBrandProCatByCount = await BrandProductCategoryModel.findOne({_id: checkId._id});
+      if(!findBrandProCatByCount) throw new createHttpError.NotFound("محصولی با دسته بندی برند مورد نظر یافت نشد");
+      return res.status(httpStatus.OK).json({
+        count: findBrandProCatByCount.count
+      })
+    } catch (error) {
+      next(error)
+    }
+  };
+
 
 }
 

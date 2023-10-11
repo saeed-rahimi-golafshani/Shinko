@@ -25,9 +25,13 @@ const { ProductTypeModel } = require("../../../../Models/Product_Type.Model");
 const { VariationModel } = require("../../../../Models/Variation.Model");
 const { VariationOptionModel } = require("../../../../Models/Variation_Option.Model");
 const { ProductConfigrationModel } = require("../../../../Models/Product_Configration.Model");
+const { BrandProductCategoryModel } = require("../../../../Models/Brand_ProductCategory.Model");
+const { BrandModel } = require("../../../../Models/Brand.Model");
 const productBlackList = {
   FILE_ID: "file_Id",
   PRICE: "price",
+  BRAND_ID: "brand_Id",
+  BRAND_PRODUCTCAT_ID: "brand_productCat_Id"
 }
 Object.freeze(productBlackList);
 
@@ -42,6 +46,7 @@ class ProductController extends Controller{
         short_text, 
         tags, 
         product_category_Id, 
+        brand_Id,
         Product_Type_Id,
         producer, 
         status, 
@@ -61,6 +66,7 @@ class ProductController extends Controller{
         short_text,
         tags,
         product_category_Id,
+        brand_Id,
         Product_Type_Id,
         producer,
         status,
@@ -95,6 +101,38 @@ class ProductController extends Controller{
       await ProductModel.updateOne({_id: createProduct._id}, {file_Id: fileId});
       //  ------------- count product categhory ------------------------
       await createCounterCategory(ProductCategoryModel, createProduct.product_category_Id);
+      // ----------------- create brand ------------------------
+      const productCategory = await ProductCategoryModel.findOne({_id: product_category_Id});
+      const brand = await BrandModel.findOne({_id: brand_Id});
+      const brandProductCategory = await BrandProductCategoryModel.findOne({productCategory_Id: createProduct.product_category_Id, brand_Id: createProduct.brand_Id});
+      if(brandProductCategory){
+        let count = brandProductCategory.count;
+        console.log(count);
+        await BrandProductCategoryModel.updateOne(
+          {
+            _id: brandProductCategory._id
+          },
+          {
+            count: count + 1
+          })
+        await ProductModel.updateOne({_id: createProduct._id}, {brand_productCat_Id: brandProductCategory._id}); ////////
+        await createCounterCategory(BrandModel, createProduct.brand_Id)
+        
+      } else {
+        const brandProductCatTitle = productCategory.title + " " + brand.title;
+        const brand_ProductCat = await BrandProductCategoryModel.create(
+          {
+            brand_Id, 
+            productCategory_Id: product_category_Id, 
+            title: brandProductCatTitle,
+          })
+        await createCounterCategory(BrandModel, createProduct.brand_Id)
+        if(!brand_ProductCat) throw new createHttpError.InternalServerError("خطای سروری");
+        await ProductModel.updateOne({_id: createProduct._id}, {brand_productCat_Id: brand_ProductCat._id});
+        const find_Id = await ProductModel.findOne({_id: createProduct._id});
+        await createCounterCategory(BrandProductCategoryModel, find_Id.brand_productCat_Id); 
+      }
+      
 
       return res.status(httpStatus.CREATED).json({
         statusCode: httpStatus.CREATED,
@@ -120,13 +158,17 @@ class ProductController extends Controller{
           }).populate([
             {path: "file_Id", select: {files: 1}},
             {path: "product_category_Id", select: {title: 1}},
-            {path: "Product_Type_Id", select: {type_name: 1}}
+            {path: "Product_Type_Id", select: {type_name: 1}},
+            {path: "brand_Id", select: {title: 1}},
+            {path: "brand_productCat_Id", select: {title: 1}}
           ]);
       } else {
         products = await ProductModel.find({}).populate([
           {path: "file_Id", select: {files: 1}},
           {path: "product_category_Id", select: {title: 1}},
-          {path: "Product_Type_Id", select: {type_name: 1}}
+          {path: "Product_Type_Id", select: {type_name: 1}},
+          {path: "brand_Id", select: {title: 1}},
+          {path: "brand_productCat_Id", select: {title: 1}}
         ]);
       }
       if(!products) throw new createHttpError.NotFound("محصولی یافت نشد");
@@ -147,7 +189,9 @@ class ProductController extends Controller{
       const listOfProduct = await ProductModel.findOne({_id: product._id}).populate([
         {path: "file_Id", select: {files: 1}},
         {path: "product_category_Id", select: {title: 1}},
-        {path: "Product_Type_Id", select: {type_name: 1}}
+        {path: "Product_Type_Id", select: {type_name: 1}},
+        {path: "brand_Id", select: {title: 1}},
+        {path: "brand_productCat_Id", select: {title: 1}}
       ]);
       if(!listOfProduct) throw new createHttpError.NotFound("محصولی یافت نشد");
       console.log(listOfProduct);
@@ -168,7 +212,9 @@ class ProductController extends Controller{
       const listOfProduct = await ProductModel.find({product_category_Id: product._id}).populate([
         {path: "file_Id", select: {files: 1}},
         {path: "product_category_Id", select: {title: 1}},
-        {path: "Product_Type_Id", select: {type_name: 1}}
+        {path: "Product_Type_Id", select: {type_name: 1}},
+        {path: "brand_Id", select: {title: 1}},
+        {path: "brand_productCat_Id", select: {title: 1}}
       ]);
       if(!listOfProduct) throw new createHttpError.NotFound("محصولی یافت نشد");
       return res.status(httpStatus.OK).json({
@@ -188,7 +234,9 @@ class ProductController extends Controller{
       const listOfProduct = await ProductModel.find({Product_Type_Id: product._id}).populate([
         {path: "file_Id", select: {files: 1}},
         {path: "product_category_Id", select: {title: 1}},
-        {path: "Product_Type_Id", select: {type_name: 1}}
+        {path: "Product_Type_Id", select: {type_name: 1}},
+        {path: "brand_Id", select: {title: 1}},
+        {path: "brand_productCat_Id", select: {title: 1}}
       ]);
       if(!listOfProduct) throw new createHttpError.NotFound("محصولی یافت نشد");
       return res.status(httpStatus.OK).json({
@@ -208,7 +256,9 @@ class ProductController extends Controller{
       const product = await ProductModel.find({producer}).populate([
         {path: "file_Id", select: {files: 1}},
         {path: "product_category_Id", select: {title: 1}},
-        {path: "Product_Type_Id", select: {type_name: 1}}
+        {path: "Product_Type_Id", select: {type_name: 1}},
+        {path: "brand_Id", select: {title: 1}},
+        {path: "brand_productCat_Id", select: {title: 1}}
       ]);
       if(!product) throw new createHttpError.NotFound("محصولی یافت نشد");
       return res.status(httpStatus.OK).json({
@@ -226,7 +276,9 @@ class ProductController extends Controller{
       const product = await ProductModel.find({active: true}).populate([
         {path: "file_Id", select: {files: 1}},
         {path: "product_category_Id", select: {title: 1}},
-        {path: "Product_Type_Id", select: {type_name: 1}}
+        {path: "Product_Type_Id", select: {type_name: 1}},
+        {path: "brand_Id", select: {title: 1}},
+        {path: "brand_productCat_Id", select: {title: 1}}
       ]);
       if(!product) throw new createHttpError.NotFound("محصولی یافت نشد");
       return res.status(httpStatus.OK).json({
@@ -244,7 +296,9 @@ class ProductController extends Controller{
       const product = await ProductModel.find({active: false}).populate([
         {path: "file_Id", select: {files: 1}},
         {path: "product_category_Id", select: {title: 1}},
-        {path: "Product_Type_Id", select: {type_name: 1}}
+        {path: "Product_Type_Id", select: {type_name: 1}},
+        {path: "brand_Id", select: {title: 1}},
+        {path: "brand_productCat_Id", select: {title: 1}}
       ]);
       if(!product) throw new createHttpError.NotFound("محصولی یافت نشد");
       return res.status(httpStatus.OK).json({
@@ -287,14 +341,18 @@ class ProductController extends Controller{
       let blackFeildList = Object.values(productBlackList);
       deleteInvalidPropertyObject(dataBody, blackFeildList);
       if(dataBody.product_category_Id){
-        updateCounterCategory(ProductCategoryModel, product.product_category_Id, dataBody.product_category_Id)
+        updateCounterCategory(ProductCategoryModel, product.product_category_Id, dataBody.product_category_Id);
       }
+      // if(dataBody.brand_Id){ 
+      //   updateCounterCategory(BrandModel, product.brand_Id, dataBody.brand_Id);
+      //   // createCounterCategory(BrandProductCategoryModel, product.brand_productCat_Id); 
+      // }
       const updateResault = await ProductModel.updateOne({_id: product._id}, {$set: dataBody});
       if(updateResault.modifiedCount == 0) throw new createHttpError.InternalServerError("خطای سروری");
       return res.status(httpStatus.OK).json({
         statusCode: httpStatus.OK,
         data: {
-          message: "به روز رسانی محصول با موفقیت انجام شد"
+          message: "به روز رسانی محصول با موفقیت انجام شد" 
         }
       })
 
@@ -323,7 +381,8 @@ class ProductController extends Controller{
     } catch (error) {
       next(error)
     }
-  } 
+  };
+
 }
 
 module.exports = {

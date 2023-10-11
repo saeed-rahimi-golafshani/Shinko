@@ -48,7 +48,7 @@ class ProductCategoryController extends Controller{
       return res.status(httpStatus.CREATED).json({
         statusCode: httpStatus.CREATED,
         data: {
-            message: "دسته بندی مقاله با موفقیت ثبت گردید"
+            message: "دسته بندی محصول با موفقیت ثبت گردید"
         }
       });
     } catch (error) {
