@@ -9,6 +9,7 @@ const { ProductModel } = require("../../../../Models/Product.Model");
 const { BrandProductCategoryModel } = require("../../../../Models/Brand_ProductCategory.Model");
 
 class BrandConteroller extends Controller{
+
   async createBrand(req, res, next){
     try {
       const requestBody = await createBrandSchema.validateAsync(req.body);
@@ -204,7 +205,6 @@ class BrandConteroller extends Controller{
       next(error)
     }
   };
-
 
 }
 

@@ -22,9 +22,6 @@ const { ProductCategoryModel } = require("../../../../Models/Product_Category.Mo
 const { StatusCodes: httpStatus } = require("http-status-codes");
 const { FileModel } = require("../../../../Models/Files.Model");
 const { ProductTypeModel } = require("../../../../Models/Product_Type.Model");
-const { VariationModel } = require("../../../../Models/Variation.Model");
-const { VariationOptionModel } = require("../../../../Models/Variation_Option.Model");
-const { ProductConfigrationModel } = require("../../../../Models/Product_Configration.Model");
 const { BrandProductCategoryModel } = require("../../../../Models/Brand_ProductCategory.Model");
 const { BrandModel } = require("../../../../Models/Brand.Model");
 const productBlackList = {
@@ -36,6 +33,7 @@ const productBlackList = {
 Object.freeze(productBlackList);
 
 class ProductController extends Controller{
+  
   async createProduct(req, res, next){
     try {
       const requestBody = await createProductSchema.validateAsync(req.body);
@@ -132,15 +130,12 @@ class ProductController extends Controller{
         const find_Id = await ProductModel.findOne({_id: createProduct._id});
         await createCounterCategory(BrandProductCategoryModel, find_Id.brand_productCat_Id); 
       }
-      
-
       return res.status(httpStatus.CREATED).json({
         statusCode: httpStatus.CREATED,
         data: {
             message: "محصول با موفقیت ثبت شد"
         }
     })
-
     } catch (error) {
       next(error)
     }
