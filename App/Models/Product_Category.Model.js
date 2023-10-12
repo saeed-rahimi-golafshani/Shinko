@@ -30,7 +30,7 @@ function autoPopulate(next){
 };
 ProductCategorySchema.pre("findOne", autoPopulate).pre("find", autoPopulate);
 ProductCategorySchema.index({title: "text"});
-ProductCategorySchema.virtual("iconURL").get(function(){
+ProductCategorySchema.virtual("iconUrl").get(function(){
     return `${process.env.BASEURL}:${process.env.APPLICATION_PORT}/${this.icon}`
 });
 module.exports = {

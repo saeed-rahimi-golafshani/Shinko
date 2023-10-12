@@ -12,10 +12,10 @@ const BrandSchema = new mongoose.Schema({
     toJSON: {virtuals: true}
 });
 
+BrandSchema.index({title: "text", en_title: "text"});
 BrandSchema.virtual("iconUrl").get(function(){
     return `${process.env.BASEURL}:${process.env.APPLICATION_PORT}/${this.icon}`
 });
-BrandSchema.index({title: "text", en_title: "text"});
 
 module.exports = {
     BrandModel: mongoose.model("brand", BrandSchema)
