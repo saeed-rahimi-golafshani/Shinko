@@ -11,6 +11,7 @@ const { ProductModel } = require("../Models/Product.Model");
 const { OfferNameModel } = require("../Models/OfferName.Model");
 const momentMJ = require("moment-jalali");
 const { BrandModel } = require("../Models/Brand.Model");
+const { MenuModel } = require("../Models/Menu.Model");
 
 function hashString(str){
     const salt = bcrypt.genSaltSync(10);
@@ -115,6 +116,9 @@ async function uploadFileWithFolderName(req, folderName){
         return fileName
     }  else if(folderName == "Brand"){
         fileName = await getEnTitle(req, BrandModel)
+        return fileName
+    }  else if(folderName == "Menu"){
+        fileName = await getEnTitle(req, MenuModel)
         return fileName
     }  
     

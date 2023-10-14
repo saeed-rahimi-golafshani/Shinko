@@ -16,6 +16,7 @@ const MenuSchema = new mongoose.Schema({
 MenuSchema.virtual("iconUrl").get(function(){
     return `${process.env.BASEURL}:${process.env.APPLICATION_PORT}/${this.icon}`
 });
+MenuSchema.index({title: "text", description: "text"});
 
 module.exports = {
     MenuModel : mongoose.model("menu", MenuSchema)
