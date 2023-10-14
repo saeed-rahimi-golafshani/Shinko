@@ -2,6 +2,7 @@ const { AdminApiBlogCategoryRoutes } = require("./BlogCategoryRoutes");
 const { AdminApiBlogRoutes } = require("./BlogRoutes");
 const { AdminApiBrandRoutes } = require("./Brand.Routes");
 const { AdminApiCourseStatusRoutes } = require("./CourseStatus.Routes");
+const { AdminApiCourseTypeRoutes } = require("./CourseType.Routes");
 const { AdminApiMenuRotes } = require("./Menu.Routes");
 const { AdminApiOfferNameRoutes } = require("./OfferName.Routes");
 const { AdminApiProductRoutes } = require("./Product.Routes");
@@ -26,6 +27,7 @@ router.use("/offer_name", AdminApiOfferNameRoutes);
 router.use("/brand", AdminApiBrandRoutes);
 router.use("/menu", AdminApiMenuRotes);
 router.use("/course_status", AdminApiCourseStatusRoutes);
+router.use("/course_type", AdminApiCourseTypeRoutes);
 
 module.exports = {
     AdminApiRoutes: router
