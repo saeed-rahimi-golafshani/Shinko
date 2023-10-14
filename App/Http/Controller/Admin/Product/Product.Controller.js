@@ -377,7 +377,6 @@ class ProductController extends Controller{
       next(error)
     }
   };
-
 }
 
 module.exports = {
