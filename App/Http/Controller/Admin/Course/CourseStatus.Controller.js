@@ -29,7 +29,7 @@ class CourseStatusController extends Controller{
   };
   async listOfCourseStatus(req, res, next){
     try {
-      const status = await CourseStatusModel.find({});
+      const status = await CourseStatusModel.find({}, {__v: 0});
       if(!status) throw new createHttpError.NotFound("وضعیتی یافت نشد")
       return res.status(httpStatus.OK).json({
         statusCode: httpStatus.OK,
