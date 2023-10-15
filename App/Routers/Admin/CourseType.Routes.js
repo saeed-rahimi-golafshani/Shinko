@@ -2,6 +2,8 @@ const { CourseTypeConteroller } = require("../../Http/Controller/Admin/Course/Co
 const router = require("express").Router();
 
 router.post("/create", CourseTypeConteroller.createCourseType);
+router.get("/list", CourseTypeConteroller.listOfCourseType);
+router.patch("/update/:id", CourseTypeConteroller.upadteOfCourseType);
 
 module.exports = {
   AdminApiCourseTypeRoutes: router
