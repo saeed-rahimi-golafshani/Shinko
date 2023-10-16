@@ -3,10 +3,17 @@ const { PermissionModel } = require("../../../../Models/Permission.Model");
 const { 
   checkExistOfModelByTitleWithoutFile, 
   convertGregorianToPersionToday, 
-  checkExistOfModelById} = require("../../../../Utills/Public_Function");
+  checkExistOfModelById,
+  deleteInvalidPropertyObject,
+  copyObject} = require("../../../../Utills/Public_Function");
 const { createPermissionSchema } = require("../../../Validations/Admin/RBAC.Schema");
 const Controller = require("../../Controller");
-const { StatusCodes: httpStatus } = require("http-status-codes")
+const { StatusCodes: httpStatus } = require("http-status-codes");
+const permissionBlacList = {
+  SLUG: "slug",
+  CREATEAT: "createAt"
+};
+Object.freeze(permissionBlacList);
 
 class PermissionController extends Controller{
   async createPermission(req, res, next){
@@ -95,6 +102,30 @@ class PermissionController extends Controller{
       next(error)
     }
   };
+  async updatePermission(req, res, next){
+    try {
+      const { id } = req.params;
+      const checkId = await checkExistOfModelById(id, PermissionModel);
+      const requestData = copyObject(req.body);
+      const blackFeildList = Object.values(permissionBlacList)
+      deleteInvalidPropertyObject(requestData, blackFeildList);
+      let slug;
+      if(requestData.description){
+        slug = (requestData.description.split(" ").toString()).replace(/,/g, "_");
+      }
+      const updateAt = convertGregorianToPersionToday();
+      const updateResault = await PermissionModel.updateOne({_id: checkId._id}, {$set: requestData, slug, updateAt});
+      if(updateResault.modifiedCount == 0) throw new createHttpError.InternalServerError("خطای سروری");
+      return res.status(httpStatus.OK).json({
+        statusCode: httpStatus.OK,
+        data: {
+          message: "به روز رسانی با موفقیت انجام شد"
+        }
+      });
+    } catch (error) {
+      next(error)
+    }
+  }
 }
 
 module.exports = {
