@@ -11,6 +11,7 @@ const { signAccessToken, signRefreshToken, verifyRefreshToken } = require("../..
 const ip = require("ip");
 const { LoginModel } = require("../../../Models/Login.Model");
 const { BrowserModel } = require("../../../Models/Browser.Model");
+const { RoleModel } = require("../../../Models/Role.Model");
 class OtpAuthenticationController extends Controller{
     async otp_Register(req, res, next){
         try {
@@ -40,9 +41,10 @@ class OtpAuthenticationController extends Controller{
         if(resault){
             return await this.updateUser(mobile, {otp})
         } else {
+            const role = await RoleModel.findOne({title: ROLES.BUYER})
             const user = await UserModel.create({
                 mobile,
-                role: ROLES.BUYER
+                role_Id: role
             });
             const activation = await ActivationModel.create({user_Id: user._id, otp});
             return !!(activation, user)

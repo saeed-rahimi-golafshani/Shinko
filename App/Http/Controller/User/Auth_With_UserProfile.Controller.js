@@ -11,14 +11,17 @@ const { ROLES } = require("../../../Utills/Constants");
 const ip = require("ip");
 const { LoginModel } = require("../../../Models/Login.Model");
 const { BrowserModel } = require("../../../Models/Browser.Model");
+const { RoleModel } = require("../../../Models/Role.Model");
 
-class Auth_UserProfile_Controller extends Controller{
+class Auth_UserProfile_Controller extends Controller{ 
     async register(req, res, next){
         try {
             const requestBody = await registerSchema.validateAsync(req.body);
             const { firstname, lastname, mobile, email, password } = requestBody;
             await this.checkExistUser(mobile);
-            const user = await UserModel.create({firstname, lastname, mobile, email, role: ROLES.BUYER})
+            const role = await RoleModel.findOne({title: ROLES.BUYERS})
+            const user = await UserModel.create({firstname, lastname, mobile, email, role_Id: role.id})
+            // const user = await UserModel.create({firstname, lastname, mobile, email, role: ROLES.BUYER})
             if(!user) throw new createHttpError.InternalServerError("خطای سروری");
             const hashPassword = hashString(password);
             const now = persionDateGenerator();

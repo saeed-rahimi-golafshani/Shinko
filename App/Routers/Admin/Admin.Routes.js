@@ -10,6 +10,7 @@ const { AdminApiProductCategoryRoutes } = require("./ProductCategory.Routes");
 const { AdminApiProductConfigAdvanceRoutes } = require("./ProductConfigAdvance.Routes");
 const { AdminApiProductConfigPromotionRoutes } = require("./ProductConfigPromotion.Routes");
 const { AdminApiProductTypeRoutes } = require("./ProductType.Routes");
+const { AdminApiRoleRoutes } = require("./Role.Routes");
 const { AdminApiVariationRoutes } = require("./Variation.Routes");
 const { AdminApiVariationOptionsRoutes } = require("./VariationOption.Routes");
 const router = require("express").Router();
@@ -28,6 +29,8 @@ router.use("/brand", AdminApiBrandRoutes);
 router.use("/menu", AdminApiMenuRotes);
 router.use("/course_status", AdminApiCourseStatusRoutes);
 router.use("/course_type", AdminApiCourseTypeRoutes);
+router.use("/role", AdminApiRoleRoutes); 
+
 
 module.exports = {
     AdminApiRoutes: router

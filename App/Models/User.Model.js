@@ -7,7 +7,7 @@ const UserSchema = new mongoose.Schema({
     mobile: {type: String, required: true},
     email: {type: String, lowercase: true},
     birthday: {type: String},
-    role: {type: String, default: "USER"},
+    role_Id: {type: mongoose.Types.ObjectId, ref: "role"},
     active: {type: Boolean, default: true},
 }, {
     timestamps: true,
