@@ -5,6 +5,7 @@ const { AdminApiCourseStatusRoutes } = require("./CourseStatus.Routes");
 const { AdminApiCourseTypeRoutes } = require("./CourseType.Routes");
 const { AdminApiMenuRotes } = require("./Menu.Routes");
 const { AdminApiOfferNameRoutes } = require("./OfferName.Routes");
+const { AdminApiPermissionRoutes } = require("./Permission.Routes");
 const { AdminApiProductRoutes } = require("./Product.Routes");
 const { AdminApiProductCategoryRoutes } = require("./ProductCategory.Routes");
 const { AdminApiProductConfigAdvanceRoutes } = require("./ProductConfigAdvance.Routes");
@@ -30,6 +31,7 @@ router.use("/menu", AdminApiMenuRotes);
 router.use("/course_status", AdminApiCourseStatusRoutes);
 router.use("/course_type", AdminApiCourseTypeRoutes);
 router.use("/role", AdminApiRoleRoutes); 
+router.use("/permission", AdminApiPermissionRoutes)
 
 
 module.exports = {
