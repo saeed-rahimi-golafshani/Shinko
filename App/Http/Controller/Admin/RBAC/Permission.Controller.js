@@ -11,7 +11,8 @@ const Controller = require("../../Controller");
 const { StatusCodes: httpStatus } = require("http-status-codes");
 const permissionBlacList = {
   SLUG: "slug",
-  CREATEAT: "createAt"
+  CREATEAT: "createAt",
+  UPDATEAT: "updateAt"
 };
 Object.freeze(permissionBlacList);
 

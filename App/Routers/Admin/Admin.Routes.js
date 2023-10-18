@@ -1,3 +1,5 @@
+const { checkPermission } = require("../../Http/Middleware/Permission.Guard");
+const { PERMISSIONS } = require("../../Utills/Constants");
 const { AdminApiBlogCategoryRoutes } = require("./BlogCategoryRoutes");
 const { AdminApiBlogRoutes } = require("./BlogRoutes");
 const { AdminApiBrandRoutes } = require("./Brand.Routes");
@@ -12,27 +14,79 @@ const { AdminApiProductConfigAdvanceRoutes } = require("./ProductConfigAdvance.R
 const { AdminApiProductConfigPromotionRoutes } = require("./ProductConfigPromotion.Routes");
 const { AdminApiProductTypeRoutes } = require("./ProductType.Routes");
 const { AdminApiRoleRoutes } = require("./Role.Routes");
+const { AdmonApiRolePermissionRoutes } = require("./Role_Permissioin.Routes");
 const { AdminApiVariationRoutes } = require("./Variation.Routes");
 const { AdminApiVariationOptionsRoutes } = require("./VariationOption.Routes");
 const router = require("express").Router();
 
-router.use("/blog_category", AdminApiBlogCategoryRoutes);
-router.use("/blog", AdminApiBlogRoutes);
-router.use("/product_category", AdminApiProductCategoryRoutes);
-router.use("/product_type", AdminApiProductTypeRoutes);
-router.use("/product", AdminApiProductRoutes);
-router.use("/variation", AdminApiVariationRoutes);
-router.use("/variation_option", AdminApiVariationOptionsRoutes);
-router.use("/productConfig_Advance", AdminApiProductConfigAdvanceRoutes);
-router.use("/productConfig_Promotion", AdminApiProductConfigPromotionRoutes);
-router.use("/offer_name", AdminApiOfferNameRoutes);
-router.use("/brand", AdminApiBrandRoutes);
-router.use("/menu", AdminApiMenuRotes);
-router.use("/course_status", AdminApiCourseStatusRoutes);
-router.use("/course_type", AdminApiCourseTypeRoutes);
-router.use("/role", AdminApiRoleRoutes); 
-router.use("/permission", AdminApiPermissionRoutes)
-
+router.use("/blog_category", checkPermission(
+    [
+        PERMISSIONS.ADMIN,
+    ]), AdminApiBlogCategoryRoutes);
+router.use("/blog", checkPermission(
+    [
+        PERMISSIONS.ADMIN
+    ]), AdminApiBlogRoutes);
+router.use("/product_category", checkPermission(
+    [
+        PERMISSIONS.ADMIN
+    ]), AdminApiProductCategoryRoutes);
+router.use("/product_type", checkPermission(
+    [
+        PERMISSIONS.ADMIN
+    ]), AdminApiProductTypeRoutes);
+router.use("/product", checkPermission(
+    [
+        PERMISSIONS.ADMIN,
+    ]), AdminApiProductRoutes);
+router.use("/variation", checkPermission(
+    [
+        PERMISSIONS.ADMIN
+    ]), AdminApiVariationRoutes);
+router.use("/variation_option", checkPermission(
+    [
+        PERMISSIONS.ADMIN
+    ]), AdminApiVariationOptionsRoutes);
+router.use("/productConfig_Advance", checkPermission(
+    [
+        PERMISSIONS.ADMIN
+    ]), AdminApiProductConfigAdvanceRoutes);
+router.use("/productConfig_Promotion", checkPermission(
+    [
+        PERMISSIONS.ADMIN
+    ]), AdminApiProductConfigPromotionRoutes);
+router.use("/offer_name", checkPermission(
+    [
+        PERMISSIONS.ADMIN
+    ]), AdminApiOfferNameRoutes);
+router.use("/brand", checkPermission(
+    [
+        PERMISSIONS.ADMIN
+    ]), AdminApiBrandRoutes);
+router.use("/menu", checkPermission(
+    [
+        PERMISSIONS.ADMIN
+    ]), AdminApiMenuRotes);
+router.use("/course_status", checkPermission(
+    [
+        PERMISSIONS.ADMIN
+    ]), AdminApiCourseStatusRoutes);
+router.use("/course_type", checkPermission(
+    [
+        PERMISSIONS.ADMIN
+    ]), AdminApiCourseTypeRoutes);
+router.use("/role", checkPermission(
+    [
+        PERMISSIONS.SUPER_ADMIN
+    ]), AdminApiRoleRoutes); 
+router.use("/permission", checkPermission(
+    [
+        PERMISSIONS.SUPER_ADMIN
+    ]), AdminApiPermissionRoutes)
+router.use("/role_permission", checkPermission(
+    [
+        PERMISSIONS.SUPER_ADMIN
+    ]), AdmonApiRolePermissionRoutes);
 
 module.exports = {
     AdminApiRoutes: router

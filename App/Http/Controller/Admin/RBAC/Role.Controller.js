@@ -12,7 +12,8 @@ const { StatusCodes: httpStatus } = require("http-status-codes");
 const { ROLES } = require("../../../../Utills/Constants");
 const roletBlackList = {
   SLUG: "slug",
-  CREATEAT: "createAt"
+  CREATEAT: "createAt",
+  UPDATEAT: "updateAt"
 }
 Object.freeze(roletBlackList);
 
@@ -23,7 +24,7 @@ class RoleController extends Controller{
       const { title, description, content } = requestBody;
       await checkExistOfModelByTitleWithoutFile(title, RoleModel);
       let createAt, updateAt, slug, createResault;
-      if(title == ROLES.BUYERS || title == ROLES.ADMIN){
+      if(title == ROLES.BUYERS || title == ROLES.SUPER_ADMIN){
         createAt = convertGregorianToPersionToday();
         updateAt = convertGregorianToPersionToday();
         slug = (description.split(" ").toString()).replace(/,/g, "_");
@@ -138,7 +139,7 @@ class RoleController extends Controller{
     let blackFeildList = Object.values(roletBlackList);
     deleteInvalidPropertyObject(requestData, blackFeildList);
     if(requestData.title){
-      if(requestData.title == ROLES.BUYERS || requestData.title == ROLES.ADMIN){
+      if(requestData.title == ROLES.BUYERS || requestData.title == ROLES.SUPER_ADMIN){
         await RoleModel.updateOne({_id: checkId._id}, {active: true});
       } else {
         await RoleModel.updateOne({_id: checkId._id}, {active: false});

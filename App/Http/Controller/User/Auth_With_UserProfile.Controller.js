@@ -76,7 +76,7 @@ class Auth_UserProfile_Controller extends Controller{
                         version: userAgent.version, 
                         os: userAgent.os, 
                         platform: userAgent.platform, 
-                        source: userAgent.sooure, 
+                        source: userAgent.source, 
                         geoIp: userAgent.geoIp, 
                         isMobile: userAgent.isMobile, 
                         isDesktop: userAgent.isDesktop
