@@ -1,7 +1,6 @@
-const { Mongoose } = require("mongoose");
 const { default: mongoose } = require("mongoose");
 
-const CourseSchema = new Mongoose.Schema({
+const CourseSchema = new mongoose.Schema({
   product_Id: {type: mongoose.Types.ObjectId, required: true, ref: "product"},
   courseType_Id: {type: mongoose.Types.ObjectId, required: true, ref: "course_type"},
   courseStatus_Id: {type: mongoose.Types.ObjectId, required: true, ref: "course_status"},

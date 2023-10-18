@@ -3,6 +3,7 @@ const { PERMISSIONS } = require("../../Utills/Constants");
 const { AdminApiBlogCategoryRoutes } = require("./BlogCategoryRoutes");
 const { AdminApiBlogRoutes } = require("./BlogRoutes");
 const { AdminApiBrandRoutes } = require("./Brand.Routes");
+const { AdminApiCourseRoutes } = require("./Course.Routes");
 const { AdminApiCourseStatusRoutes } = require("./CourseStatus.Routes");
 const { AdminApiCourseTypeRoutes } = require("./CourseType.Routes");
 const { AdminApiMenuRotes } = require("./Menu.Routes");
@@ -75,6 +76,10 @@ router.use("/course_type", checkPermission(
     [
         PERMISSIONS.ADMIN
     ]), AdminApiCourseTypeRoutes);
+router.use("/course", checkPermission(
+    [
+        PERMISSIONS.ADMIN
+    ]), AdminApiCourseRoutes);
 router.use("/role", checkPermission(
     [
         PERMISSIONS.SUPER_ADMIN
