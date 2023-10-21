@@ -1,0 +1,12 @@
+# listOfBlogResolver ==> blogs
+{
+  blogs{
+    title
+    refrenceImage
+    createdAt
+    blog_category_Id{
+      title
+    }
+	}
+}
+

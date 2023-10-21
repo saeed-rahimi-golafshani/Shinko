@@ -15,7 +15,8 @@ const { listOfImageFromRequest,
     deleteFileInPathArray, 
     createCounterCategory,
     updateCounterCategory, 
-    deleteFolderInPath} = require("../../../../Utills/Public_Function");
+    deleteFolderInPath,
+    convertGregorianToPersionToday} = require("../../../../Utills/Public_Function");
 const { FileModel } = require("../../../../Models/Files.Model");
 const { StatusCodes: httpStatus } = require("http-status-codes");
 const { BlogCategoryModel } = require("../../../../Models/Blog_Category.Model");
@@ -25,10 +26,12 @@ class BlogController extends Controller{
     async createBlog(req, res, next){
         try {
             const requestBody = await createBlogSchema.validateAsync(req.body);
-            const { blog_category_Id, title, en_title, short_text, text, tags, reading_time, show } = requestBody;
+            const { blog_category_Id, title, en_title, short_text, text, tags, reading_time } = requestBody;
             const fileAddress = listOfImageFromRequest(req.files.images || [], requestBody.fileUploadPath);
             await checkExistOfModelByTitle(title, BlogModel, fileAddress);
             const author = req.user._id;
+            const createAt = convertGregorianToPersionToday();
+            const updateAt = convertGregorianToPersionToday();
             const blog = await BlogModel.create({
                 blog_category_Id, 
                 title, 
@@ -37,7 +40,9 @@ class BlogController extends Controller{
                 text, tags, 
                 reading_time, 
                 author,
-                show: false
+                show: false,
+                createdAt: createAt,
+                updatedAt: updateAt
             });
             if(!blog) throw new createHttpError.InternalServerError("خطای سروری");
 
@@ -178,7 +183,8 @@ class BlogController extends Controller{
             if(dataBody.blog_category_Id){
                 updateCounterCategory(BlogCategoryModel, blog.blog_category_Id, dataBody.blog_category_Id)
             }
-            const updateResault = await BlogModel.updateOne({_id: blog._id}, {$set: dataBody});
+            const updateAt = convertGregorianToPersionToday();
+            const updateResault = await BlogModel.updateOne({_id: blog._id}, {$set: dataBody, updatedAt: updateAt});
             if(updateResault.modifiedCount == 0) throw new createHttpError.InternalServerError("خطای سروری");
             return res.status(httpStatus.OK).json({
                 statusCode: httpStatus.OK,

@@ -10,9 +10,10 @@ const BlogSchema = new mongoose.Schema({
     text: {type: String, required: true},
     tags: {type: [String], default: []},
     reading_time: {type: String},
-    show: {type: Boolean, default: false}    
+    show: {type: Boolean, default: false},
+    createdAt: {type: String, default: ""},
+    updatedAt: {type: String}
 }, {
-    timestamps: true,
     toJSON: {
         virtuals: true
     },
@@ -21,13 +22,17 @@ const BlogSchema = new mongoose.Schema({
     }
 });
 
-BlogSchema.virtual("filesUrl").get( function(){
+// BlogSchema.virtual("filesUrl").get( function(){
+//     console.log(this.file_Id.files);
+//     return (this.file_Id.files.map(file => `${process.env.BASEURL}:${process.env.APPLICATION_PORT}/${file}`))
+// });
+BlogSchema.virtual("fileUrl").get(function(){
+    console.log(this.file_Id._id);
     return this.file_Id.files.map(file => `${process.env.BASEURL}:${process.env.APPLICATION_PORT}/${file}`)
 });
 BlogSchema.virtual("refrenceImage").get(function() {
-   return `${process.env.BASEURL}:${process.env.APPLICATION_PORT}/${this.file_Id.files[0]}`
-})
-
+   return  `${process.env.BASEURL}:${process.env.APPLICATION_PORT}/${this.file_Id.files[0]}`
+});
 module.exports = {
     BlogModel: mongoose.model("blog", BlogSchema)
 };

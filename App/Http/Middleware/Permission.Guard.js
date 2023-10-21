@@ -15,10 +15,7 @@ function checkPermission(requiredPermission = []){
       const id_permissions = rolePermissions.map(item => item.permission_Id);
       const permissions = await PermissionModel.find({_id: {$in: id_permissions}});
       const userPermission = permissions.map(item => item.title);
-      console.log(userPermission);
-      console.log(allPermissions);
       const hasPermission = allPermissions.every(permission => {
-        console.log(userPermission.includes(permission));
         return userPermission.includes(permission)
       });
       if(userPermission.includes(PERMISSIONS.SUPER_ADMIN)) return next()

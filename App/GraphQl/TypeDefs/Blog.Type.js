@@ -17,7 +17,8 @@ const BlogType = new GraphQLObjectType({
     filesUrl: {type: new GraphQLList(GraphQLString)},
     refrenceImage: {type: GraphQLString},
     show: {type: GraphQLBoolean},
-    createdAt: {type: GraphQLString}
+    createdAt: {type: GraphQLString},
+    updateedAt: {type: GraphQLString}
   }
 });
 
