@@ -25,7 +25,7 @@ class BlogController extends Controller{
     async createBlog(req, res, next){
         try {
             const requestBody = await createBlogSchema.validateAsync(req.body);
-            const { blog_category_Id, title, en_title, short_text, text, tags, reading_time } = requestBody;
+            const { blog_category_Id, title, en_title, short_text, text, tags, reading_time, show } = requestBody;
             const fileAddress = listOfImageFromRequest(req.files.images || [], requestBody.fileUploadPath);
             await checkExistOfModelByTitle(title, BlogModel, fileAddress);
             const author = req.user._id;
@@ -36,7 +36,8 @@ class BlogController extends Controller{
                 short_text, 
                 text, tags, 
                 reading_time, 
-                author
+                author,
+                show: false
             });
             if(!blog) throw new createHttpError.InternalServerError("خطای سروری");
 

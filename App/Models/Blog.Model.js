@@ -9,7 +9,8 @@ const BlogSchema = new mongoose.Schema({
     short_text: {type: String, required: true},
     text: {type: String, required: true},
     tags: {type: [String], default: []},
-    reading_time: {type: String},    
+    reading_time: {type: String},
+    show: {type: Boolean, default: false}    
 }, {
     timestamps: true,
     toJSON: {
@@ -23,6 +24,9 @@ const BlogSchema = new mongoose.Schema({
 BlogSchema.virtual("filesUrl").get( function(){
     return this.file_Id.files.map(file => `${process.env.BASEURL}:${process.env.APPLICATION_PORT}/${file}`)
 });
+BlogSchema.virtual("refrenceImage").get(function() {
+   return `${process.env.BASEURL}:${process.env.APPLICATION_PORT}/${this.file_Id.files[0]}`
+})
 
 module.exports = {
     BlogModel: mongoose.model("blog", BlogSchema)
