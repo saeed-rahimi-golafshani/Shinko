@@ -14,20 +14,15 @@ const BlogSchema = new mongoose.Schema({
     createdAt: {type: String, default: ""},
     updatedAt: {type: String}
 }, {
-    toJSON: {
-        virtuals: true
-    },
-    toObject: {
-        virtuals: true
-    }
+    toJSON: {virtuals: true},
 });
 
 // BlogSchema.virtual("filesUrl").get( function(){
 //     console.log(this.file_Id.files);
 //     return (this.file_Id.files.map(file => `${process.env.BASEURL}:${process.env.APPLICATION_PORT}/${file}`))
 // });
-BlogSchema.virtual("fileUrl").get(function(){
-    console.log(this.file_Id._id);
+BlogSchema.virtual("filesUrl").get(function(){
+    console.log(this.file_Id.files);
     return this.file_Id.files.map(file => `${process.env.BASEURL}:${process.env.APPLICATION_PORT}/${file}`)
 });
 BlogSchema.virtual("refrenceImage").get(function() {

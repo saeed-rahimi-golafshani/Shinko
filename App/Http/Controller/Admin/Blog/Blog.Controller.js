@@ -87,7 +87,11 @@ class BlogController extends Controller{
     };
     async listOfBlog(req, res, next){
         try {
-            const list_of_blog = await BlogModel.find({})
+            const list_of_blog = await BlogModel.find({}).populate([
+                {path: "file_Id", select: {files: 1}},
+                {path: "blog_category_Id", select: {title: 1}},
+                {path: "author", select: {type_name: 1}},
+              ]);
             if(!list_of_blog) throw new createHttpError.NotFound("بلاگی یافت نشد");
             return res.status(httpStatus.OK).json({
                 statusCode: httpStatus.OK,
@@ -103,7 +107,11 @@ class BlogController extends Controller{
         try {
             const { id } = req.params;
             const blog = await checkExistOfModelById(id, BlogModel);
-            const listOfblog = await BlogModel.findOne({_id: blog._id})
+            const listOfblog = await BlogModel.findOne({_id: blog._id}).populate([
+                {path: "file_Id", select: {files: 1}},
+                {path: "blog_category_Id", select: {title: 1}},
+                {path: "author", select: {type_name: 1}},
+              ]);
             if(!listOfblog) throw new createHttpError.NotFound("بلاگی یافت نشد");
             return res.status(httpStatus.OK).json({
                 statusCode: httpStatus.OK,
