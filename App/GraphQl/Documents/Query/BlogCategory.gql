@@ -1,0 +1,27 @@
+# listOfBlogCategoryResolver ==> blogCategoreis
+{
+  blogCategoreis{
+    _id
+    title
+    icon
+    count
+  }
+}
+# listOfBlogCategoryResolverById ==> blogCategoreisById(id:"64f03cda18a9600a99dbe234") 
+{
+  blogCategoreisById(id:"64f03cda18a9600a99dbe234"){
+    title
+    children
+    iconUrl
+    count
+  }
+}
+# listOfBlogCategoryResolverShow ==> blogCategoreisShowInArchive
+{
+  blogCategoreisShowInArchive{
+    title
+    children
+    iconUrl
+    count
+  }
+}

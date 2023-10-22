@@ -1,8 +1,8 @@
 const { GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLBoolean, GraphQLList } = require("graphql");
 const { AnyType } = require("./Public.Types");
 
-const BlogCategoryType = new GraphQLObjectType({
-  name: "BlogCategoryType",
+const Blog_CategoryType = new GraphQLObjectType({
+  name: "Blog_CategoryType",
   fields: {
     _id: {type: GraphQLString},
     title: {type: GraphQLString},
@@ -17,5 +17,5 @@ const BlogCategoryType = new GraphQLObjectType({
 });
 
 module.exports = {
-  BlogCategoryType
+  Blog_CategoryType
 }
