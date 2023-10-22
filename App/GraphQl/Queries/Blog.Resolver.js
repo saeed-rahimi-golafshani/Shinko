@@ -18,13 +18,33 @@ const listOfBlogResolverById = {
   args: {
     id: {type: GraphQLString}
   },
-  resolve: async (_, args) => {
+  resolve: async (_, args, context) => {
     const { id } = args;
-    return blog = await BlogModel.findOne({_id: id});
+    const blog = await BlogModel.find({_id: id}).populate([
+      {path: "author"},
+      {path: "blog_category_Id"},
+      {path: "file_Id"},
+    ]);
+    return blog
+  }
+};
+const listOfBlogResolverByCategory ={
+  type: new GraphQLList(BlogType),
+  args: {
+    bCategoryId: {type: GraphQLString}
+  },
+  resolve: async (_, args, context) => {
+    const { bCategoryId } = args;
+    return blogs = await BlogModel.find({blog_category_Id: bCategoryId}).populate([
+      {path: "author"},
+      {path: "blog_category_Id"},
+      {path: "file_Id"},
+    ]);
   }
 }
 
 module.exports = {
   listOfBlogResolver,
-  listOfBlogResolverById
+  listOfBlogResolverById,
+  listOfBlogResolverByCategory
 }

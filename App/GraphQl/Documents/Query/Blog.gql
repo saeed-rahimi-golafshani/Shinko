@@ -9,4 +9,27 @@
     }
 	}
 }
-
+# listOfBlogResolverById ==> blogById(id: "6533f741434e8552bf105d40")
+{
+  blogById(id: "6533f741434e8552bf105d40"){
+    createdAt
+    blog_category_Id{
+      title
+    }
+    title
+    reading_time
+    filesUrl
+    text
+	}
+}
+# listOfBlogResolverByCategory ==> blogByCategory(bCategoryId: "6533f48f2d6a3a5ccb5d3998")
+{
+  blogByCategory(bCategoryId: "6533f48f2d6a3a5ccb5d3998"){
+    title
+  	refrenceImage
+    reading_time
+    blog_category_Id{
+      title
+    }
+	}
+}
