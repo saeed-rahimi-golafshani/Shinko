@@ -1,4 +1,5 @@
-const { GraphQLObjectType, GraphQLString, GraphQLList } = require("graphql");
+const { GraphQLObjectType, GraphQLString, GraphQLList, GraphQLScalarType } = require("graphql");
+const { toObject, parseLiteral } = require("../Utils");
 
 const UserType = new GraphQLObjectType({
   name: "UserType",
@@ -22,10 +23,17 @@ const FileType = new GraphQLObjectType({
     _id: {type: GraphQLString},
     files: {type: new GraphQLList(GraphQLString)}
   }
+});
+const AnyType = new GraphQLScalarType({
+  name: "AnyType",
+  parseValue: toObject,
+  serialize: toObject,
+  parseLiteral: parseLiteral
 })
 
 module.exports = {
   UserType,
   BlogCategoryType,
-  FileType
+  FileType,
+  AnyType
 }
