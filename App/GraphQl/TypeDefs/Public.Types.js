@@ -24,20 +24,32 @@ const FileType = new GraphQLObjectType({
     files: {type: new GraphQLList(GraphQLString)}
   }
 });
+const ProductCategoryType = new GraphQLObjectType({
+  name: "ProductCategoryType",
+  fields: {
+    _id: {type: GraphQLString},
+    title: {type: GraphQLString}
+  }
+});
+const Product_BrandType = new GraphQLObjectType({
+  name: "Product_BrandType",
+  fields: {
+    _id: {type: GraphQLString},
+    title: {type: GraphQLString}
+  }
+});
+const productType_Type = new GraphQLObjectType({
+  name: "productType_Type",
+  feilds: {
+    _id: {type: GraphQLString},
+    title: {type: GraphQLString}
+  }
+});
 const AnyType = new GraphQLScalarType({
   name: "AnyType",
   parseValue: toObject,
   serialize: toObject,
   parseLiteral: parseLiteral
-});
-const ProductCategoryType = new GraphQLObjectType({
-  name: "ProductCategoryType",
-  fields: {
-    _id: {type: GraphQLString},
-    title: {type: GraphQLString},
-    iconUrl: {type: GraphQLString},
-    count: {type: GraphQLInt}
-  }
 });
 
 module.exports = {
@@ -45,5 +57,7 @@ module.exports = {
   BlogCategoryType,
   FileType,
   AnyType,
-  ProductCategoryType
+  ProductCategoryType,
+  Product_BrandType,
+  productType_Type
 }
