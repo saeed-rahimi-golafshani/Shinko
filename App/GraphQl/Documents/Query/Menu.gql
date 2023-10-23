@@ -1,0 +1,17 @@
+# listOfMenuResolver ==> menus 
+{
+  menus{
+    _id
+    title
+    iconUrl
+    link
+  }
+}
+# listOfMenuResolverById ==>  menuById(id:"65284fbcd31501c79344b606")
+{
+  menuById(id:"65284fbcd31501c79344b606"){
+    title
+    iconUrl
+    link
+  }
+}
