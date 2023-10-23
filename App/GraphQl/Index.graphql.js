@@ -2,6 +2,7 @@ const { GraphQLObjectType, GraphQLSchema } = require("graphql");
 const {listOfBlogResolver, listOfBlogResolverById, listOfBlogResolverByCategory} = require("./Queries/Blog.Resolver");
 const { listOfBlogCategoryResolver, listOfBlogCategoryResolverById, listOfBlogCategoryResolverShow } = require("./Queries/Blog_Category.Resolver");
 const { listOfMenuResolver, listOfMenuResolverById } = require("./Queries/Menu.Resolver");
+const { listOfProductCategoryResolver } = require("./Queries/Product_Category.Resolver");
 
 const RootQuery = new GraphQLObjectType({
   name: "RootQuery",
@@ -13,7 +14,8 @@ const RootQuery = new GraphQLObjectType({
     blogCategoreisById: listOfBlogCategoryResolverById,
     blogCategoreisShowInArchive: listOfBlogCategoryResolverShow,
     menus: listOfMenuResolver,
-    menuById: listOfMenuResolverById
+    menuById: listOfMenuResolverById,
+    productCategories: listOfProductCategoryResolver
   }
 });
 

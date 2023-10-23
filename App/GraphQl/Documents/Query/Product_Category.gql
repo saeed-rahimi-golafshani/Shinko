@@ -1,0 +1,7 @@
+# listOfProductCategoryResolver ==> productCategories
+{
+  productCategories{
+    title
+    iconUrl
+  }
+}
