@@ -30,7 +30,9 @@ ProductSchema.virtual("fileUrl").get(function(){
     return this.file_Id.files.map(file => `${process.env.BASEURL}:${process.env.APPLICATION_PORT}/${file}`)
 });
 
-
+BlogSchema.virtual("refrenceImage").get(function() {
+    return  `${process.env.BASEURL}:${process.env.APPLICATION_PORT}/${this.file_Id.files[0]}`
+ });
 ProductSchema.index({title: "text", en_title: "text", producer: "text"})
 
 module.exports = {
