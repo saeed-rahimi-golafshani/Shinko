@@ -18,7 +18,27 @@ const listOfProductCategoryResolverById = {
     return productCategory = await ProductCategoryModel.find({_id: id})
   }
 };
+const listOfProductCategoryResolverShow = {
+  type: new GraphQLList(ProductCategoryType),
+  resolve: async(_, args, context) => {
+    return productCategories = await ProductCategoryModel.find({parent_Category: undefined, showInArchive: true})
+  }
+};
+const listOfProductCategoryResolverByParentId = {
+  type: new GraphQLList(ProductCategoryType),
+  args: {
+    parentId: {type: GraphQLString}
+  },
+  resolve: async(_, args, context) => {
+    const { parentId } = args;
+    return await ProductCategoryModel.find({parent_Category: parentId});
+  }
+}
+
 
 module.exports = {
-  listOfProductCategoryResolver
+  listOfProductCategoryResolver,
+  listOfProductCategoryResolverById,
+  listOfProductCategoryResolverShow,
+  listOfProductCategoryResolverByParentId
 }

@@ -1,7 +1,32 @@
 # listOfProductCategoryResolver ==> productCategories
 {
-  productCategories{
+  productCategoriesParent{
     title
+    iconUrl
+  }
+}
+# listOfProductCategoryResolverById ==> productCategoryById(id: "")
+{
+  productCategoryById(id: ""){
+    _id
+    title
+    iconUrl
+    count
+  }
+}
+# listOfProductCategoryResolverShow ==> productCategoriesShow
+{
+  productCategoriesShow{
+  	title
+    children
+  }
+}
+# listOfProductCategoryResolverByParentId ==> productCategoriesByParentId(parentId:"65264cb52b0b88ce46cc9f35")
+{
+  productCategoriesByParentId(parentId:"65264cb52b0b88ce46cc9f35"){
+    _id
+    title
+    count
     iconUrl
   }
 }
