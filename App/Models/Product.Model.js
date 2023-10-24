@@ -29,10 +29,27 @@ ProductSchema.virtual("fileUrl").get(function(){
     console.log(this.file_Id.files);
     return this.file_Id.files.map(file => `${process.env.BASEURL}:${process.env.APPLICATION_PORT}/${file}`)
 });
-
 ProductSchema.virtual("refrenceImage").get(function() {
-    return  `${process.env.BASEURL}:${process.env.APPLICATION_PORT}/${this.file_Id.files[0]}`
- });
+   return  `${process.env.BASEURL}:${process.env.APPLICATION_PORT}/${this.file_Id.files[0]}`
+});
+ProductSchema.virtual("stock_limite").get(function() {
+    let stock_limit;
+    switch (this.stock) {
+        case 0:
+            stock_limit = "ناموجود";
+            break;
+        case 1: 
+            stock_limit = "تنها 1 عدد در انبار باقی است"
+            break;
+        case 2: 
+            stock_limit = "تنها 2 عدد در انبار باقی است"
+            break;
+        default:
+            stock_limit = ""
+            break;
+    }
+    return stock_limit
+});
 ProductSchema.index({title: "text", en_title: "text", producer: "text"})
 
 module.exports = {

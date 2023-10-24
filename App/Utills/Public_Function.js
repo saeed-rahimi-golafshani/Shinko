@@ -238,6 +238,24 @@ function getTime(milliseconds){
         return hours + ":" + minutes + ":" + seconds 
         //+ ":" + milliseconds;
 }
+function stockLimited(stock){
+    let stock_limit;
+    switch (stock) {
+        case 0:
+            stock_limit = "ناموجود";
+            break;
+        case 1: 
+            stock_limit = "تنها 1 عدد در انبار باقی است"
+            break;
+        case 2: 
+            stock_limit = "تنها 2 عدد در انبار باقی است"
+            break;
+        default:
+            stock_limit = ""
+            break;
+    }
+    return stock_limit
+}
 
 module.exports = {
     hashString,
@@ -268,6 +286,6 @@ module.exports = {
     getTime,
     convertPersionToGregorianEndDate,
     convertPersionToGregorianStartDate,
-    convertGregorianToPersionToday
-
+    convertGregorianToPersionToday,
+    stockLimited
 }

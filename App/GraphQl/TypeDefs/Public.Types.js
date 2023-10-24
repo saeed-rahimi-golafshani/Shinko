@@ -24,8 +24,8 @@ const FileType = new GraphQLObjectType({
     files: {type: new GraphQLList(GraphQLString)}
   }
 });
-const ProductCategoryType = new GraphQLObjectType({
-  name: "ProductCategoryType",
+const Product_Category_Type = new GraphQLObjectType({
+  name: "Product_CategoryType",
   fields: {
     _id: {type: GraphQLString},
     title: {type: GraphQLString}
@@ -57,7 +57,7 @@ module.exports = {
   BlogCategoryType,
   FileType,
   AnyType,
-  ProductCategoryType,
+  Product_Category_Type,
   Product_BrandType,
-  productType_Type
+  // productType_Type
 }

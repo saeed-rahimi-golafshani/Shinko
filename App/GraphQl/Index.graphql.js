@@ -3,22 +3,29 @@ const {listOfBlogResolver, listOfBlogResolverById, listOfBlogResolverByCategory}
 const { listOfBlogCategoryResolver, listOfBlogCategoryResolverById, listOfBlogCategoryResolverShow } = require("./Queries/Blog_Category.Resolver");
 const { listOfMenuResolver, listOfMenuResolverById } = require("./Queries/Menu.Resolver");
 const { listOfProductCategoryResolver, listOfProductCategoryResolverById, listOfProductCategoryResolverShow, listOfProductCategoryResolverByParentId } = require("./Queries/Product_Category.Resolver");
+const { listOfProductResolver } = require("./Queries/Product.Resolver");
 
 const RootQuery = new GraphQLObjectType({
   name: "RootQuery",
   fields: {
+    // blog 
     blogs: listOfBlogResolver,
     blogById: listOfBlogResolverById,
     blogByCategory: listOfBlogResolverByCategory,
+    // blog_category
     blogCategoreis: listOfBlogCategoryResolver,
     blogCategoreisById: listOfBlogCategoryResolverById,
     blogCategoreisShowInArchive: listOfBlogCategoryResolverShow,
+    // menu 
     menus: listOfMenuResolver,
     menuById: listOfMenuResolverById,
+    // product_category
     productCategoriesParent: listOfProductCategoryResolver,
     productCategoryById: listOfProductCategoryResolverById,
     productCategoriesShow: listOfProductCategoryResolverShow,
     productCategoriesByParentId: listOfProductCategoryResolverByParentId,
+    // product 
+    products: listOfProductResolver
 
   }
 });

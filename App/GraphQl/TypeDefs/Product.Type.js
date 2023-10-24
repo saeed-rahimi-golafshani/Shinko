@@ -1,5 +1,6 @@
 const { GraphQLObjectType, GraphQLString, GraphQLList, GraphQLInt, GraphQLBoolean } = require("graphql");
-const { ProductCategoryType, Product_BrandType, productType_Type, FileType } = require("./Public.Types");
+const { Product_Category_Type, Product_BrandType, productType_Type, FileType } = require("./Public.Types");
+const { Brand_ProductCategoryType } = require("./Brand_ProductCategory.Type");
 
 const ProductType = new GraphQLObjectType({
   name: "ProductType",
@@ -10,13 +11,14 @@ const ProductType = new GraphQLObjectType({
     text: {type: GraphQLString},
     short_text: {type: GraphQLString},
     tags: {type: new GraphQLList(GraphQLString)},
-    product_category: {type: ProductCategoryType},
-    brand: {type: Product_BrandType},
-    product_Type: {type: productType_Type},
-    files: {type: FileType},
+    product_category_Id: {type: Product_Category_Type},
+    brand_Id: {type: Product_BrandType},
+    brand_productCat_Id: {type: Brand_ProductCategoryType},
+    // Product_Type_Id: {type: productType_Type},
+    file_Id: {type: FileType},
     producer: {type: GraphQLString},
     status: {type: GraphQLString},
-    Stock: {type: GraphQLInt},
+    stock: {type: GraphQLInt},
     active: {type: GraphQLBoolean},
     main_price: {type: GraphQLInt},
     discount: {type: GraphQLInt},
@@ -24,7 +26,8 @@ const ProductType = new GraphQLObjectType({
     sendDate: {type: GraphQLString},
     returned: {type: GraphQLBoolean},
     fileUrl: {type: GraphQLString},
-    imagerefrence: {type: GraphQLString}
+    refrenceImage: {type: GraphQLString},
+    stock_limite: {type: GraphQLString}
   }
 });
 
