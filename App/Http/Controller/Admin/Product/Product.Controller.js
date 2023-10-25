@@ -165,6 +165,49 @@ class ProductController extends Controller{
           {path: "brand_Id", select: {title: 1}},
           {path: "brand_productCat_Id", select: {title: 1}}
         ]);
+        // products = await ProductModel.aggregate([
+        //   {
+        //     $match: {}
+        //   },
+        //   {
+        //     $lookup: {
+        //       from: "product_categories",
+        //       localField: "product_category_Id",
+        //       foreignField: "_id",
+        //       as: "product_category_Id"
+        //     }
+        //   },
+        //   {$unwind: "$product_category_Id"},
+        //   {
+        //     $lookup: {
+        //       from: "brands",
+        //       localField: "brand_Id",
+        //       foreignField: "_id",
+        //       as: "brand_Id"
+        //     }
+        //   },
+        //   {
+        //     $lookup: {
+        //       from: "brand_productCategories",
+        //       localField: "brand_productCat_Id",
+        //       foreignField: "_id",
+        //       as: "brand_productCat_Id"
+        //     }
+        //   },
+        //   {
+        //     $lookup: {
+        //       from: "files",
+        //       localField: "file_Id",
+        //       foreignField: "_id",
+        //       as: "file_Id"
+        //     }
+        //   },
+        //   {
+        //     $project: {
+        //       "__v": 0
+        //     }
+        //   }
+        // ]);
       }
       if(!products) throw new createHttpError.NotFound("محصولی یافت نشد");
       return res.status(httpStatus.OK).json({

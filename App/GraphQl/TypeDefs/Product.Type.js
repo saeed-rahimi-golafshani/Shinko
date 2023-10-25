@@ -1,4 +1,4 @@
-const { GraphQLObjectType, GraphQLString, GraphQLList, GraphQLInt, GraphQLBoolean } = require("graphql");
+const { GraphQLObjectType, GraphQLString, GraphQLList, GraphQLInt, GraphQLBoolean, GraphQLScalarType } = require("graphql");
 const { Product_Category_Type, Product_BrandType, productType_Type, FileType } = require("./Public.Types");
 const { Brand_ProductCategoryType } = require("./Brand_ProductCategory.Type");
 
@@ -27,7 +27,7 @@ const ProductType = new GraphQLObjectType({
     returned: {type: GraphQLBoolean},
     fileUrl: {type: GraphQLString},
     refrenceImage: {type: GraphQLString},
-    stock_limite: {type: GraphQLString}
+    stock_limite: {type: GraphQLString},
   }
 });
 

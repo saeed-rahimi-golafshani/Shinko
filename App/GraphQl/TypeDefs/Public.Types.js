@@ -24,13 +24,23 @@ const FileType = new GraphQLObjectType({
     files: {type: new GraphQLList(GraphQLString)}
   }
 });
-const Product_Category_Type = new GraphQLObjectType({
-  name: "Product_CategoryType",
+
+const childrenCategory = new GraphQLObjectType({
+  name: "childrenCategory",
   fields: {
     _id: {type: GraphQLString},
     title: {type: GraphQLString}
   }
 });
+const Product_Category_Type = new GraphQLObjectType({
+  name: "Product_CategoryType",
+  fields: {
+    _id: {type: GraphQLString},
+    title: {type: GraphQLString},
+    children: {type: childrenCategory}
+  }
+});
+
 const Product_BrandType = new GraphQLObjectType({
   name: "Product_BrandType",
   fields: {

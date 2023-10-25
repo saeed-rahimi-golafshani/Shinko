@@ -1,0 +1,12 @@
+# listOfProduct ==> products
+{
+  products{
+    _id
+    title
+    refrenceImage
+    stock_limite
+		discount
+    price
+    main_price
+  }
+}
