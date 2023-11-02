@@ -23,12 +23,11 @@ const ProductType = new GraphQLObjectType({
     main_price: {type: GraphQLInt},
     discount: {type: GraphQLInt},
     price: {type: GraphQLInt},
-    sendDate: {type: GraphQLString},
+    send_date: {type: GraphQLString},
     returned: {type: GraphQLBoolean},
-    fileUrl: {type: GraphQLString},
+    fileUrl: {type: new GraphQLList(GraphQLString)},
     refrenceImage: {type: GraphQLString},
-    stock_limite: {type: GraphQLString},
-    product_feature: {type: new GraphQLList(GraphQLString)}
+    stock_limite: {type: GraphQLString}
   }
 });
 

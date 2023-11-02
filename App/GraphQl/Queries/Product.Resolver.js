@@ -36,11 +36,11 @@ const listOfProductResolverById = {
 const listOfVariationProduct = {
   type: new GraphQLList(VariationOptionType),
   args: {
-    id: {type: GraphQLString}
+    proId: {type: GraphQLString}
   },
   resolve: async (_, args) => {
-    const { id } = args;
-    const product = await ProductModel.find({_id: id}).populate([
+    const { proId } = args;
+    const product = await ProductModel.find({_id: proId}).populate([
       {path: "file_Id", select: {files: 1}},
       {path: "product_category_Id", select: {title: 1}},
       {path: "brand_Id", select: {title: 1}},
@@ -54,7 +54,7 @@ const listOfVariationProduct = {
   ]);
   return varation_opt
   }
-}
+};
 
 module.exports = {
   listOfProductResolver,

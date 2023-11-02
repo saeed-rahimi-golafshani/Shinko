@@ -1,7 +1,4 @@
 const { default: mongoose } = require("mongoose");
-const { ProductCategoryModel } = require("./Product_Category.Model");
-const { VariationModel } = require("./Variation.Model");
-const { VariationOptionModel } = require("./Variation_Option.Model");
 
 const ProductSchema = new mongoose.Schema({
     title: {type: String, required: true},

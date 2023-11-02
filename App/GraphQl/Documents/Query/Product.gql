@@ -10,3 +10,38 @@
     main_price
   }
 }
+
+# listOfProductById  ===> productById(id:"6526f8c4418a47f9f7f8957a")
+{
+  productById(id:"6526f8c4418a47f9f7f8957a"){
+    brand_Id{
+      title
+    }
+    brand_productCat_Id{
+      title
+    }
+    title
+    en_title
+    refrenceImage
+    fileUrl
+    text
+    short_text
+    tags
+    producer
+    stock_limite
+    discount
+    main_price
+    price
+    send_date
+  }
+}
+
+# variationProduct ===>  variationProduct(proId:"6526314167967494f76bddcd")
+{
+  variationProduct(proId:"6526314167967494f76bddcd"){
+    variation_Id{
+      name
+    }
+    value
+  }
+}
