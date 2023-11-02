@@ -232,7 +232,6 @@ class ProductController extends Controller{
         {path: "brand_productCat_Id", select: {title: 1}}
       ]);
       if(!listOfProduct) throw new createHttpError.NotFound("محصولی یافت نشد");
-      console.log(listOfProduct);
       return res.status(httpStatus.OK).json({
         statusCode: httpStatus.OK,
         data: {

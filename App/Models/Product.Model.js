@@ -1,4 +1,7 @@
 const { default: mongoose } = require("mongoose");
+const { ProductCategoryModel } = require("./Product_Category.Model");
+const { VariationModel } = require("./Variation.Model");
+const { VariationOptionModel } = require("./Variation_Option.Model");
 
 const ProductSchema = new mongoose.Schema({
     title: {type: String, required: true},
@@ -26,7 +29,6 @@ const ProductSchema = new mongoose.Schema({
     toObject:{ virtuals: true}
 });
 
-
 // ProductSchema.virtual("product_category", {
 //     ref: "product_category",
 //     localField: "_id",
@@ -53,9 +55,8 @@ const ProductSchema = new mongoose.Schema({
 //     foreignField: "file_Id"
 // });
 
- 
+ProductSchema.index({title: "text", en_title: "text", producer: "text"});
 ProductSchema.virtual("fileUrl").get(function(){
-    console.log(this.file_Id.files);
     return this.file_Id.files.map(file => `${process.env.BASEURL}:${process.env.APPLICATION_PORT}/${file}`)
 });
 ProductSchema.virtual("refrenceImage").get(function() {
@@ -79,25 +80,6 @@ ProductSchema.virtual("stock_limite").get(function() {
     }
     return stock_limit
 });
-// ProductSchema.virtual("total_price").get(function() {
-//     let total;
-//     switch (this.discount) {
-//         case 0:
-//             stock_limit = "ناموجود";
-//             break;
-//         case 1: 
-//             stock_limit = "تنها 1 عدد در انبار باقی است"
-//             break;
-//         case 2: 
-//             stock_limit = "تنها 2 عدد در انبار باقی است"
-//             break;
-//         default:
-//             stock_limit = ""
-//             break;
-//     }
-//     return stock_limit
-// });
-ProductSchema.index({title: "text", en_title: "text", producer: "text"})
 
 module.exports = {
     ProductModel: mongoose.model("product", ProductSchema)

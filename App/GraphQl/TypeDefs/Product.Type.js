@@ -28,6 +28,7 @@ const ProductType = new GraphQLObjectType({
     fileUrl: {type: GraphQLString},
     refrenceImage: {type: GraphQLString},
     stock_limite: {type: GraphQLString},
+    product_feature: {type: new GraphQLList(GraphQLString)}
   }
 });
 
