@@ -3,7 +3,7 @@ const {listOfBlogResolver, listOfBlogResolverById, listOfBlogResolverByCategory}
 const { listOfBlogCategoryResolver, listOfBlogCategoryResolverById, listOfBlogCategoryResolverShow } = require("./Queries/Blog_Category.Resolver");
 const { listOfMenuResolver, listOfMenuResolverById } = require("./Queries/Menu.Resolver");
 const { listOfProductCategoryResolver, listOfProductCategoryResolverById, listOfProductCategoryResolverShow, listOfProductCategoryResolverByParentId } = require("./Queries/Product_Category.Resolver");
-const { listOfProductResolver, listOfProductResolverById, listOfVariationProduct } = require("./Queries/Product.Resolver");
+const { listOfProductResolver, listOfProductResolverById, listOfVariationProduct, listOfProductByBrandId, listOfProductByCatId } = require("./Queries/Product.Resolver");
 
 const RootQuery = new GraphQLObjectType({
   name: "RootQuery",
@@ -27,7 +27,9 @@ const RootQuery = new GraphQLObjectType({
     // product 
     products: listOfProductResolver,
     productById: listOfProductResolverById,
-    variationProduct: listOfVariationProduct
+    variationProduct: listOfVariationProduct,
+    productByBrandId: listOfProductByBrandId,
+    listOfProductByCategory: listOfProductByCatId,
 
   }
 });

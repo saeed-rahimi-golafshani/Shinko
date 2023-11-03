@@ -55,9 +55,44 @@ const listOfVariationProduct = {
   return varation_opt
   }
 };
+const listOfProductByBrandId = {
+  type: new GraphQLList(ProductType),
+  args: {
+    brandId: {type: GraphQLString}
+  },
+  resolve: async (_, args) => {
+    const { brandId } = args;
+    const product = await ProductModel.find({brand_Id: brandId}).populate([
+      {path: "file_Id", select: {files: 1}},
+      {path: "product_category_Id", select: {title: 1}},
+      {path: "brand_Id", select: {title: 1}},
+      {path: "brand_productCat_Id", select: {title: 1}}  
+    ]);
+    return product
+  }
+};
+const listOfProductByCatId = {
+  type: new GraphQLList(ProductType),
+  args: {
+    catId: {type: GraphQLString}
+  },
+  resolve: async (_, args) => {
+    const { catId } = args;
+    const product = await ProductModel.find({product_category_Id: catId}).populate([
+      {path: "file_Id", select: {files: 1}},
+      {path: "product_category_Id", select: {title: 1}},
+      {path: "brand_Id", select: {title: 1}},
+      {path: "brand_productCat_Id", select: {title: 1}}  
+    ]);
+    return product
+
+  }
+}
 
 module.exports = {
   listOfProductResolver,
   listOfProductResolverById,
-  listOfVariationProduct
+  listOfVariationProduct,
+  listOfProductByBrandId,
+  listOfProductByCatId
 }

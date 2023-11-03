@@ -45,3 +45,14 @@
     value
   }
 }
+
+# listOfProductByCategory ===>  listOfProductByCategory(catId:"65264def2b0b88ce46cc9f64")
+{
+  listOfProductByCategory(catId:"65264def2b0b88ce46cc9f64"){
+    title
+    refrenceImage
+    stock_limite
+    discount
+    price
+  }
+}
