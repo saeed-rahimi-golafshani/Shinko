@@ -5,7 +5,9 @@ const { VariationModel } = require("../../Models/Variation.Model");
 const { VariationOptionType } = require("../TypeDefs/Variation_Option.Type");
 const { VariationOptionModel } = require("../../Models/Variation_Option.Model");
 const { BrandType } = require("../TypeDefs/Brand.Type");
-const { BrandModel } = require("../../Models/Brand.Model")
+const { BrandModel } = require("../../Models/Brand.Model");
+const { ProductCategoryType } = require("../TypeDefs/Product_Category.Type");
+const { ProductCategoryModel } = require("../../Models/Product_Category.Model");
 
 const listOfProductResolver = {
   type: new GraphQLList(ProductType),
@@ -100,6 +102,17 @@ const countProductBrand = {
     const brand = await BrandModel.find({_id: brandId});
     return brand
   }
+};
+const countProductCategory = {
+  type: new GraphQLList(ProductCategoryType),
+  args: {
+    catId: {type: GraphQLString}
+  },
+  resolve: async (_, args) => {
+    const { catId } = args;
+    const category = await ProductCategoryModel.find({_id: catId});
+    return category
+  }
 }
 
 module.exports = {
@@ -108,5 +121,6 @@ module.exports = {
   listOfVariationProduct,
   listOfProductByBrandId,
   listOfProductByCatId,
-  countProductBrand
+  countProductBrand,
+  countProductCategory
 }

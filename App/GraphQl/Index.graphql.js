@@ -21,7 +21,8 @@ const {
   listOfVariationProduct, 
   listOfProductByBrandId, 
   listOfProductByCatId, 
-  countProductBrand } = require("./Queries/Product.Resolver");
+  countProductBrand, 
+  countProductCategory} = require("./Queries/Product.Resolver");
 
 const RootQuery = new GraphQLObjectType({
   name: "RootQuery",
@@ -49,6 +50,7 @@ const RootQuery = new GraphQLObjectType({
     productByBrandId: listOfProductByBrandId,
     listOfProductByCategory: listOfProductByCatId,
     featureProductBrand: countProductBrand,
+    featureProductCategory: countProductCategory,
 
   }
 });

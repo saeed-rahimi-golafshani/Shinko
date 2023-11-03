@@ -65,3 +65,11 @@
     count
   }
 }
+# featureProductCategory ===>  featureProductCategory(catId:"6525a0feae5cfbbb9c0a2d93")
+{
+  featureProductCategory(catId:"6525a0feae5cfbbb9c0a2d93"){
+    title
+    iconUrl
+    count
+  }
+}
