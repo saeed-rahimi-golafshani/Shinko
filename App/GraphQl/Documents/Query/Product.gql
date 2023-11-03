@@ -56,3 +56,12 @@
     price
   }
 }
+
+# featureProductBrand ===>  featureProductBrand(brandId:"652642c2c196a4ec74554655")
+{
+  featureProductBrand(brandId:"652642c2c196a4ec74554655"){
+    title
+    iconUrl
+    count
+  }
+}

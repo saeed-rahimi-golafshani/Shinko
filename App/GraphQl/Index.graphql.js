@@ -1,9 +1,27 @@
 const { GraphQLObjectType, GraphQLSchema } = require("graphql");
-const {listOfBlogResolver, listOfBlogResolverById, listOfBlogResolverByCategory} = require("./Queries/Blog.Resolver");
-const { listOfBlogCategoryResolver, listOfBlogCategoryResolverById, listOfBlogCategoryResolverShow } = require("./Queries/Blog_Category.Resolver");
-const { listOfMenuResolver, listOfMenuResolverById } = require("./Queries/Menu.Resolver");
-const { listOfProductCategoryResolver, listOfProductCategoryResolverById, listOfProductCategoryResolverShow, listOfProductCategoryResolverByParentId } = require("./Queries/Product_Category.Resolver");
-const { listOfProductResolver, listOfProductResolverById, listOfVariationProduct, listOfProductByBrandId, listOfProductByCatId } = require("./Queries/Product.Resolver");
+const {
+  listOfBlogResolver, 
+  listOfBlogResolverById, 
+  listOfBlogResolverByCategory} = require("./Queries/Blog.Resolver");
+const { 
+  listOfBlogCategoryResolver, 
+  listOfBlogCategoryResolverById, 
+  listOfBlogCategoryResolverShow } = require("./Queries/Blog_Category.Resolver");
+const { 
+  listOfMenuResolver, 
+  listOfMenuResolverById } = require("./Queries/Menu.Resolver");
+const { 
+  listOfProductCategoryResolver, 
+  listOfProductCategoryResolverById, 
+  listOfProductCategoryResolverShow, 
+  listOfProductCategoryResolverByParentId } = require("./Queries/Product_Category.Resolver");
+const { 
+  listOfProductResolver, 
+  listOfProductResolverById, 
+  listOfVariationProduct, 
+  listOfProductByBrandId, 
+  listOfProductByCatId, 
+  countProductBrand } = require("./Queries/Product.Resolver");
 
 const RootQuery = new GraphQLObjectType({
   name: "RootQuery",
@@ -30,6 +48,7 @@ const RootQuery = new GraphQLObjectType({
     variationProduct: listOfVariationProduct,
     productByBrandId: listOfProductByBrandId,
     listOfProductByCategory: listOfProductByCatId,
+    featureProductBrand: countProductBrand,
 
   }
 });
