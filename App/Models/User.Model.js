@@ -17,8 +17,9 @@ const UserSchema = new mongoose.Schema({
     access_profile: {type: Boolean, default: true},
     Phone_verification: {type: Boolean, default: false},
     email_verification: {type: Boolean, default: false},
+    createdAt: {type: String, required: true, default: ""},
+    updatedAt: {type: String, default: ""},
 }, {
-    timestamps: true,
     toJSON: {virtuals: true}
 });
 
