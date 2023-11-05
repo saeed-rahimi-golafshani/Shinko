@@ -4,7 +4,7 @@ const { UserModel } = require("../../../Models/User.Model");
 const { registerSchema, loginSchema } = require("../../Validations/User/AuthUserProfile.Schema");
 const Controller = require("../Controller");
 const { StatusCodes: httpStatus } = require("http-status-codes");
-const { hashString, persionDateGenerator } = require("../../../Utills/Public_Function");
+const { hashString, persionDateGenerator, checkExistUser } = require("../../../Utills/Public_Function");
 const bcrypt = require("bcrypt");
 const { signAccessToken, verifyRefreshToken, signRefreshToken } = require("../../../Utills/Token");
 const { ROLES } = require("../../../Utills/Constants");
@@ -18,7 +18,7 @@ class Auth_UserProfile_Controller extends Controller{
         try {
             const requestBody = await registerSchema.validateAsync(req.body);
             const { firstname, lastname, mobile, email, password } = requestBody;
-            await this.checkExistUser(mobile);
+            await checkExistUser(mobile, UserModel)
             const role = await RoleModel.findOne({title: ROLES.BUYERS})
             const user = await UserModel.create({firstname, lastname, mobile, email, role_Id: role.id})
             // const user = await UserModel.create({firstname, lastname, mobile, email, role: ROLES.BUYER})
@@ -113,11 +113,6 @@ class Auth_UserProfile_Controller extends Controller{
         } catch (error) {
             next(error)
         }
-    }
-    async checkExistUser(mobile){
-        const user = await UserModel.findOne({mobile});
-        if(user) throw new createHttpError.BadRequest("کاربر با مشخصات زیر از قبل ثبت نام کرده است")
-        return user
     }
 };
 

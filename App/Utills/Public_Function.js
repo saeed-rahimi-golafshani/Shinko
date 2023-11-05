@@ -153,6 +153,11 @@ function getFileSize(files){
     const total = Math.ceil(sum);
     return total; 
 };
+async function checkExistUser(mobile, model){
+    const user = await model.findOne({mobile});
+    if(user) throw new createHttpError.BadRequest("کاربر با مشخصات زیر از قبل ثبت نام کرده است")
+    return user
+}
 async function checkExistOfModelById(id, modelSchema){
     if(!mongoose.isValidObjectId(id)) throw new createHttpError.BadRequest("ساختار شناسه مورد نظر اشتباه است");
     const model = await modelSchema.findById(id);
@@ -273,6 +278,7 @@ module.exports = {
     getFileMimetype,
     getFileFilename,
     getFileSize,
+    checkExistUser,
     checkExistOfModelById,
     checkExistOfModelByTitle,
     checkExistOfModelByTitleWithoutFile,

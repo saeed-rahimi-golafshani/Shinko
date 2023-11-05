@@ -15,6 +15,15 @@ module.exports = {
         AUTHOR: "AUTHORS",
         TEACHER: "TEACHER",
     }),
+    USER_STATUS: Object.freeze({
+        ACTIVE: "فعال",
+        UNACTIVE: "غیر فعال"
+    }),
+    USER_SEX: Object.freeze({
+        UNKNOWN: "نامشخص",
+        MALE: "مرد",
+        FEMALE:  "زن"
+    }),
     PERMISSIONS: Object.freeze(
         {
             SUPER_ADMIN: "all",

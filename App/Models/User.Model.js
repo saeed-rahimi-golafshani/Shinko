@@ -1,4 +1,5 @@
 const { default: mongoose } = require("mongoose");
+const { USER_STATUS, USER_SEX } = require("../Utills/Constants");
 
 const UserSchema = new mongoose.Schema({
     role_Id: {type: mongoose.Types.ObjectId, ref: "role"},
@@ -8,8 +9,8 @@ const UserSchema = new mongoose.Schema({
     mobile: {type: String, required: true},
     email: {type: String, lowercase: true},
     birthday: {type: String},
-    active: {type: Boolean, default: true},
-    sex: {type: String, default: "نامشخص"},
+    status: {type: String, default: USER_STATUS.ACTIVE},
+    sex: {type: String, default: USER_SEX.UNKNOWN},
     representative: {type: String}, // معرف
     bank_cart: {type: String},
     wallet: {type: Number, default: 0},
