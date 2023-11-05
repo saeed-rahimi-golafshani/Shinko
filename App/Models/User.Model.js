@@ -9,7 +9,7 @@ const UserSchema = new mongoose.Schema({
     email: {type: String, lowercase: true},
     birthday: {type: String},
     active: {type: Boolean, default: true},
-    sex: {type: String},
+    sex: {type: String, default: "نامشخص"},
     representative: {type: String}, // معرف
     bank_cart: {type: String},
     wallet: {type: Number, default: 0},
