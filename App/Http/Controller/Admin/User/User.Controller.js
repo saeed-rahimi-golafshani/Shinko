@@ -205,6 +205,7 @@ class UserController extends Controller{
     try {
       const { id } = req.params;
       const checkId = await checkExistOfModelById(id, UserModel);
+const user = await UserModel.findOne({_id: checkId._id})
       
     } catch (error) {
       next(error)
