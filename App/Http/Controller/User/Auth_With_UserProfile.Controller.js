@@ -19,7 +19,7 @@ class Auth_UserProfile_Controller extends Controller{
             const requestBody = await registerSchema.validateAsync(req.body);
             const { firstname, lastname, mobile, email, password } = requestBody;
             await checkExistUser(mobile, UserModel)
-            const role = await RoleModel.findOne({title: ROLES.BUYERS})
+            const role = await RoleModel.findOne({title: ROLES.USERS})
             const user = await UserModel.create({firstname, lastname, mobile, email, role_Id: role.id})
             // const user = await UserModel.create({firstname, lastname, mobile, email, role: ROLES.BUYER})
             if(!user) throw new createHttpError.InternalServerError("خطای سروری");

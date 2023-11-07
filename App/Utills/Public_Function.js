@@ -26,6 +26,10 @@ function convertPersionToGregorianEndDate(date){
 function convertPersionToGregorianStartDate(date){ 
     return momentMJ(`${date} 00:00:00.00`, 'jYYYY/jMM/jDD HH:mm').format('YYYY-MM-DD HH:mm:ss');
 };
+function convertGregorianDateToPersionDateToToday(){ 
+    const date = new Date();
+    return momentMJ(date).format('jYYYY-jMM-jDD HH:mm:ss');
+};
 function convertGregorianToPersionToday(){ 
     const date = new Date();
     return momentMJ(date).format('YYYY-MM-DD HH:mm:ss');
@@ -293,5 +297,6 @@ module.exports = {
     convertPersionToGregorianEndDate,
     convertPersionToGregorianStartDate,
     convertGregorianToPersionToday,
+    convertGregorianDateToPersionDateToToday,
     stockLimited
 }

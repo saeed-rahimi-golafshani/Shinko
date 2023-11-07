@@ -41,7 +41,7 @@ class OtpAuthenticationController extends Controller{
         if(resault){
             return await this.updateUser(mobile, {otp})
         } else {
-            const role = await RoleModel.findOne({title: ROLES.BUYER})
+            const role = await RoleModel.findOne({title: ROLES.USERS})
             const user = await UserModel.create({
                 mobile,
                 role_Id: role

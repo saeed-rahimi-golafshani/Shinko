@@ -10,16 +10,18 @@ module.exports = {
         SUPER_ADMIN: "SUPER_ADMIN",
         ADMIN: "ADMIN",
         EMPLOYE: "EMPLOYE",
-        USERS:  "USERS",
+        USER:  "USER",
         BUYERS: "BUYERS",
         AUTHOR: "AUTHORS",
         TEACHER: "TEACHER",
     }),
     USER_STATUS: Object.freeze({
+        ALL: "همه",
         ACTIVE: "فعال",
         UNACTIVE: "غیر فعال"
     }),
-    USER_SEX: Object.freeze({
+    USER_GENDER: Object.freeze({
+        ALL: "همه",
         UNKNOWN: "نامشخص",
         MALE: "مرد",
         FEMALE:  "زن"
