@@ -205,11 +205,20 @@ class UserController extends Controller{
     try {
       const { id } = req.params;
       const checkId = await checkExistOfModelById(id, UserModel);
+      const user = await UserModel.findOne({_id: checkId._id}, {role_Id: 0, birthday: 0, access_profile: 0, Phone_verification: 0, email_verification: 0, updatedAt: 0});
+      if(!user) throw new createHttpError.NotFound("کاربر یافت نشد");
+      return res.status(httpStatus.OK).json({
+        statusCode: httpStatus.OK,
+        data: {
+          user
+        }
+      })
       
     } catch (error) {
       next(error)
     }
-  }
+  };
+  
 };
 
 module.exports = {
