@@ -218,7 +218,13 @@ class UserController extends Controller{
       next(error)
     }
   };
-  
+  async updateOfUser(req, res, next){
+    try {
+      const { id } = req.params
+    } catch (error) {
+      next(error)
+    }
+  }
 };
 
 module.exports = {
