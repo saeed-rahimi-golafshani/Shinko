@@ -2,11 +2,20 @@ const createHttpError = require("http-errors");
 const { RoleModel } = require("../../../../Models/Role.Model");
 const { UserModel } = require("../../../../Models/User.Model");
 const { ROLES, USER_STATUS, USER_GENDER } = require("../../../../Utills/Constants");
-const { checkExistUser, hashString, persionDateGenerator, checkExistOfModelById, convertGregorianDateToPersionDateToToday } = require("../../../../Utills/Public_Function");
+const { checkExistUser, hashString, persionDateGenerator, checkExistOfModelById, convertGregorianDateToPersionDateToToday, copyObject, deleteInvalidPropertyObject } = require("../../../../Utills/Public_Function");
 const { registerSchema } = require("../../../Validations/User/AuthUserProfile.Schema");
 const { StatusCodes: httpStatus } = require("http-status-codes")
 const Controller = require("../../Controller");
 const { PasswordModel } = require("../../../../Models/Password.Model");
+const userBlackList = {
+  ROLE_ID: "role_Id",
+  USERNAME: "username",
+  STATUS: "status",
+  WALLET: "wallet",
+  RATE: "rate",
+  CREATEDAT: "createdAt"
+};
+Object.freeze(userBlackList)
 
 class UserController extends Controller{
   async createUserAdmin(req, res, next){
@@ -220,7 +229,33 @@ class UserController extends Controller{
   };
   async updateOfUser(req, res, next){
     try {
-      const { id } = req.params
+      const { id } = req.params;
+      let updateResault;
+      const checkId = await checkExistOfModelById(id, UserModel);
+      const requestData = copyObject(req.body);
+      let blackFeildList = Object.values(userBlackList);
+      deleteInvalidPropertyObject(requestData, blackFeildList);
+      if(requestData.access_profile){
+        if(requestData.access_profile == "false"){
+          await UserModel.updateOne({_id: checkId._id}, {status: USER_STATUS.UNACTIVE});
+        } else if(requestData.access_profile == "true"){
+          await UserModel.updateOne({_id: checkId._id}, {status: USER_STATUS.ACTIVE});
+        }
+      };
+      updateResault = await UserModel.updateOne({_id: checkId._id}, {$set: requestData});      
+      if(updateResault.modifiedCount == 0) throw new createHttpError.InternalServerError("خطای سروری");
+      if(requestData.newPassword){
+        const newPass = hashString(requestData.newPassword)
+        const changePassword = await PasswordModel.updateOne({user_Id: checkId._id}, {password: newPass})
+        if(!changePassword) throw new createHttpError.InternalServerError("خطای سروری");
+      };
+      return res.status(httpStatus.OK).json({
+        statusCode: httpStatus.OK,
+        data: {
+          message: "کاربر با موفقیت ثبت شد"
+        }
+      });
+
     } catch (error) {
       next(error)
     }
