@@ -143,13 +143,23 @@ class ProductController extends Controller{
   async listOfProduct(req, res, next){
     try {
       const { search } = req.query;
-      let products;
+      let products, numberOfResault = 0;
       if(search){
-        products = await ProductModel.findOne(
+        products = await ProductModel.find(
           { 
             $text: {
               $search: new RegExp(search, "ig")
             }
+          },
+          {
+            title: 1, 
+            product_category_Id: 1, 
+            price: 1, 
+            stock: 1, 
+            status: 1, 
+            Product_Type_Id: 0, 
+            brand_Id: 0, 
+            brand_productCat_Id: 0,
           }).populate([
             {path: "file_Id", select: {files: 1}},
             {path: "product_category_Id", select: {title: 1}},
@@ -157,6 +167,12 @@ class ProductController extends Controller{
             {path: "brand_Id", select: {title: 1}},
             {path: "brand_productCat_Id", select: {title: 1}}
           ]);
+        numberOfResault = await ProductModel.find(
+          { 
+            $text: {
+              $search: new RegExp(search, "ig")
+            }
+          }).count();
       } else {
         products = await ProductModel.find({}).populate([
           {path: "file_Id", select: {files: 1}},
@@ -165,6 +181,7 @@ class ProductController extends Controller{
           {path: "brand_Id", select: {title: 1}},
           {path: "brand_productCat_Id", select: {title: 1}}
         ]);
+        numberOfResault = await ProductModel.find({}).count();
         // products = await ProductModel.aggregate([
         //   {
         //     $match: {}
@@ -213,9 +230,40 @@ class ProductController extends Controller{
       return res.status(httpStatus.OK).json({
         statusCode: httpStatus.OK,
         data: {
-          products
+          products,
+          numberOfResault
         }
       })
+    } catch (error) {
+      next(error)
+    }
+  };
+  async listOfProductByCategory(req, res, next){
+    try {
+      const { categoryName } = req.query;
+      const productCategory = await ProductCategoryModel.findOne({title: categoryName});
+      const listOfProduct = await ProductModel.find({product_category_Id: productCategory._id}).populate([
+        {path: "file_Id", select: {files: 1}},
+        {path: "product_category_Id", select: {title: 1}},
+        {path: "Product_Type_Id", select: {type_name: 1}},
+        {path: "brand_Id", select: {title: 1}},
+        {path: "brand_productCat_Id", select: {title: 1}}
+      ]);
+      const numberOfresault = await ProductModel.find({product_category_Id: productCategory._id}).populate([
+        {path: "file_Id", select: {files: 1}},
+        {path: "product_category_Id", select: {title: 1}},
+        {path: "Product_Type_Id", select: {type_name: 1}},
+        {path: "brand_Id", select: {title: 1}},
+        {path: "brand_productCat_Id", select: {title: 1}}
+      ]).count();
+      if(!listOfProduct) throw new createHttpError.NotFound("محصولی یافت نشد");
+      return res.status(httpStatus.OK).json({
+        statusCode: httpStatus.OK,
+        data: {
+          products: listOfProduct,
+          numberOfresault
+        }
+      });
     } catch (error) {
       next(error)
     }
@@ -236,28 +284,6 @@ class ProductController extends Controller{
         statusCode: httpStatus.OK,
         data: {
           product: listOfProduct
-        }
-      });
-    } catch (error) {
-      next(error)
-    }
-  };
-  async listOfProductByCategory(req, res, next){
-    try {
-      const { productCategoryId } = req.params;
-      const product = await checkExistOfModelById(productCategoryId, ProductCategoryModel);
-      const listOfProduct = await ProductModel.find({product_category_Id: product._id}).populate([
-        {path: "file_Id", select: {files: 1}},
-        {path: "product_category_Id", select: {title: 1}},
-        {path: "Product_Type_Id", select: {type_name: 1}},
-        {path: "brand_Id", select: {title: 1}},
-        {path: "brand_productCat_Id", select: {title: 1}}
-      ]);
-      if(!listOfProduct) throw new createHttpError.NotFound("محصولی یافت نشد");
-      return res.status(httpStatus.OK).json({
-        statusCode: httpStatus.OK,
-        data: {
-          products: listOfProduct
         }
       });
     } catch (error) {

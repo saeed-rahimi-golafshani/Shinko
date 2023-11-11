@@ -9,7 +9,7 @@ router.post("/create",
   stringToArray("tags"), ProductController.createProduct);
 router.get("/list", ProductController.listOfProduct);
 router.get("/list/:id", ProductController.listOfProductById);
-router.get("/list_of_category/:productCategoryId", ProductController.listOfProductByCategory);
+router.get("/list_of_category", ProductController.listOfProductByCategory);
 router.get("/list_of_protype/:productTypeId", ProductController.listOfProductByProductType);
 router.get("/list_of_producer/:producer", ProductController.listOfProductByProducer);
 router.get("/list_of_active", ProductController.listOfProductByActive);
