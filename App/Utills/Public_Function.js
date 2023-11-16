@@ -12,6 +12,7 @@ const { OfferNameModel } = require("../Models/OfferName.Model");
 const momentMJ = require("moment-jalali");
 const { BrandModel } = require("../Models/Brand.Model");
 const { MenuModel } = require("../Models/Menu.Model");
+const { VariationModel } = require("../Models/Variation.Model");
 
 function hashString(str){
     const salt = bcrypt.genSaltSync(10);
@@ -124,7 +125,11 @@ async function uploadFileWithFolderName(req, folderName){
     }  else if(folderName == "Menu"){
         fileName = await getEnTitle(req, MenuModel)
         return fileName
+    }  else if(folderName == "Variation"){
+        fileName = await getEnTitle(req, VariationModel)
+        return fileName
     }  
+    
     
 };
 function listOfImageFromRequest(files, fileUploadPath){

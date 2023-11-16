@@ -1,30 +1,98 @@
 const Controller = require("../../Controller");
 const { createVariationSchema } = require("../../../Validations/Admin/Variation.Schema");
-const { checkExistOfModelById, copyObject, deleteInvalidPropertyObjectWithOutBlackList } = require("../../../../Utills/Public_Function");
+const { 
+  checkExistOfModelById, 
+  copyObject, 
+  deleteInvalidPropertyObjectWithOutBlackList, 
+  checkExistOfModelByTitle, 
+  deleteFileInPath} = require("../../../../Utills/Public_Function");
 const { VariationModel } = require("../../../../Models/Variation.Model");
 const createHttpError = require("http-errors");
 const { StatusCodes: httpStatus } = require("http-status-codes");
 const { default: mongoose } = require("mongoose");
 const { ProductCategoryModel } = require("../../../../Models/Product_Category.Model");
+const path = require("path");
+const { VariationCategoryModel } = require("../../../../Models/Variation_category");
 
 class VariationController extends Controller{
   async createVariation(req, res, next){
     try {
       const requestBody = await createVariationSchema.validateAsync(req.body);
-      const { product_category_Id, name } = requestBody;
-      const checkTitle = await VariationModel.findOne({product_category_Id, name});
-      if(checkTitle){
-        throw new createHttpError.BadRequest("این عنوان از قبل ثبت شده است، لطفا عنوان دیگری را انتخاب کنید")
+      const { title, en_title, show_in_archive, show_in_up } = requestBody;
+      if(req.body.fileUploadpath && req.body.filename){
+        req.body.icon = path.join(req.body.fileUploadpath, req.body.filename).replace(/\\/g, "/");
       }
-      const variation = await VariationModel.create({product_category_Id, name});
-      if(!variation) throw new createHttpError.InternalServerError("خطای سروری");
+      checkExistOfModelByTitle(title, VariationModel, req.body.icon)
+      const icon = req.body.icon;
+      const createResault = await VariationModel.create(
+        {
+          title,
+          en_title,
+          show_in_archive,
+          show_in_up,
+          icon
+        });
+      if(!createResault){
+        deleteFileInPath(req.body.icon);
+        throw new createHttpError.InternalServerError("خطای سروری");
+      }
       return res.status(httpStatus.CREATED).json({
         statusCode: httpStatus.CREATED,
         data: {
-          message: "عنوان مشخصات فنی با موفقیت ثبت گردید"
+          message: "جزئیات محصول با موفقیت ثبت شد"
         }
       });
+    } catch (error) {
+      next(error)
+    }
+    // try {
+    //   const requestBody = await createVariationSchema.validateAsync(req.body);
+    //   const { product_category_Id, name } = requestBody;
+    //   const checkTitle = await VariationModel.findOne({product_category_Id, name});
+    //   if(checkTitle){
+    //     throw new createHttpError.BadRequest("این عنوان از قبل ثبت شده است، لطفا عنوان دیگری را انتخاب کنید")
+    //   }
+    //   const variation = await VariationModel.create({product_category_Id, name});
+    //   if(!variation) throw new createHttpError.InternalServerError("خطای سروری");
+    //   return res.status(httpStatus.CREATED).json({
+    //     statusCode: httpStatus.CREATED,
+    //     data: {
+    //       message: "عنوان مشخصات فنی با موفقیت ثبت گردید"
+    //     }
+    //   });
 
+    // } catch (error) {
+    //   next(error)
+    // }
+  };
+  async listOfVariation(req, res, next){
+    try {
+      const { search } = req.query;
+      let variation, numberOfResault;
+      if(search){
+        variation = await VariationModel.find(
+          {
+            $text: {
+              $search: new RegExp(search, "ig")
+            }
+          });
+        numberOfResault = await VariationModel.find(
+          {
+            $text: {
+              $search: new RegExp(search, "ig")
+            }
+          }).count();
+      } else {
+        variation = await VariationModel.find({});
+        numberOfResault = await VariationModel.find({}).count();
+      }
+    return res.status(httpStatus.OK).json({
+      statusCode: httpStatus.OK,
+      data: {
+        variation,
+        numberOfResault
+      }
+    });
     } catch (error) {
       next(error)
     }
@@ -41,57 +109,6 @@ class VariationController extends Controller{
           variation
         }
       });
-    } catch (error) {
-      next(error)
-    }
-  };
-  async listOfVarationByProductCategoryId(req, res, next){
-    try {
-      const { proCatId } = req.params;
-      const checkId = await checkExistOfModelById(proCatId, ProductCategoryModel);
-      const variations = await VariationModel.aggregate([
-        {
-          $match: {
-            product_category_Id: checkId._id
-          },
-        },
-        {
-          $lookup: {
-            from: "product_categories",
-            localField: "product_category_Id",
-            foreignField: "_id",
-            as: "product_category_Id"
-          }
-        },
-        {
-          $unwind: "$product_category_Id"
-        },
-        {
-          $project: {
-            // "product_category_Id._id" : 0,
-            "product_category_Id.count" : 0,
-            "product_category_Id.icon" : 0,
-            "product_category_Id.text" : 0,
-            "product_category_Id.short_text" : 0,
-            "product_category_Id.__v": 0,
-            "product_category_Id.tags": 0,                  
-            "product_category_Id.en_title": 0,                  
-            "product_category_Id.showInArchive": 0,               
-            "product_category_Id.priority": 0,                  
-            "product_category_Id.parent_Category": 0,
-            "product_category_Id.createdAt": 0,
-            "product_category_Id.updatedAt": 0,
-            "__v": 0
-        }
-        }
-      ]);
-      if(!variations) throw new createHttpError.NotFound("گزینه مورد نظر یافت نشد");
-      return res.status(httpStatus.OK).json({
-        statusCode: httpStatus.OK,
-        data: {
-          variations
-        }
-      })
     } catch (error) {
       next(error)
     }

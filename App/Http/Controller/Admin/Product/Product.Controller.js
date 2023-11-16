@@ -15,7 +15,8 @@ const {
   deleteFileInPathArray,
   deleteInvalidPropertyObject,
   updateCounterCategory,
-  deleteFolderInPath} = require("../../../../Utills/Public_Function");
+  deleteFolderInPath,
+  convertGregorianDateToPersionDateToToday} = require("../../../../Utills/Public_Function");
 const { createProductSchema } = require("../../../Validations/Admin/Product.Schema");
 const Controller = require("../../Controller");
 const { ProductCategoryModel } = require("../../../../Models/Product_Category.Model");
@@ -36,67 +37,71 @@ class ProductController extends Controller{
   
   async createProduct(req, res, next){
     try {
+      console.log(req.body.image);
       const requestBody = await createProductSchema.validateAsync(req.body);
       const { 
         title, 
         en_title, 
-        text, 
-        short_text, 
-        tags, 
         product_category_Id, 
         brand_Id,
-        Product_Type_Id,
-        producer, 
-        status, 
-        stock, 
-        active, 
         main_price, 
         discount, 
-        send_date, 
-        returned } = requestBody;
-      const fileAddress = listOfImageFromRequest(req.files.images || [], requestBody.fileUploadPath);
+        preparation_time,
+        stock,
+        short_text, 
+        text, 
+        tags, 
+        returnable,
+        publication_date,
+        publication_status,
+         } = requestBody;
+      const fileAddress = listOfImageFromRequest(req.files.image || [], requestBody.fileUploadPath);
       await checkExistOfModelByTitle(title, ProductModel, fileAddress);
       const price = discountOFPrice(main_price, discount);
+      let createTime = convertGregorianDateToPersionDateToToday();
+      let updateTime = convertGregorianDateToPersionDateToToday();
       const createProduct = await ProductModel.create({
         title,
         en_title,
-        text,
-        short_text,
-        tags,
         product_category_Id,
         brand_Id,
-        Product_Type_Id,
-        producer,
-        status,
-        stock,
-        active,
         main_price,
         discount,
         price,
-        send_date,
-        returned
+        preparation_time,
+        stock,
+        short_text,
+        text,
+        tags,
+        returnable,
+        publication_date,
+        publication_status,
+        createdAt: createTime,
+        updatedAt: updateTime
       });
       if(!createProduct) throw new createHttpError.InternalServerError("خطای سروری");
-      // ----------------------- file model -------------------
-      const type_files = listOfImageFromRequest(req.files.images || [], requestBody.fileUploadPath);
-      const orginalName = getFileOrginalname(req.files['images']);
-      const fileEncoding = getFileEncoding(req.files['images']);
-      const mimeType = getFileMimetype(req.files['images']);
-      const fileName = getFileFilename(req.files['images']);
-      const fileSize = getFileSize(req.files['images']);
+      // ----------------------- file model ------------------ 
+      const type_files = listOfImageFromRequest(req.files.image || [], requestBody.fileUploadPath);
+      const orginalName = getFileOrginalname(req.files['image']);
+      const fileEncoding = getFileEncoding(req.files['image']);
+      const mimeType = getFileMimetype(req.files['image']);
+      const fileName = getFileFilename(req.files['image']);
+      const fileSize = getFileSize(req.files['image']);
       const fileDetailes = await FileModel.create({
-        type_Id: createProduct._id,
-        files: type_files, 
+        type_Id: createProduct._id, 
+        file_refrence: type_files, 
         type: "product",
         originalnames: orginalName,
         encoding: fileEncoding,
         mimetype: mimeType,
         filename: fileName,
-        size: fileSize
+        size: fileSize,
+        createdAt: createTime,
+        updatedAt: updateTime
       });
       if(!fileDetailes) throw new createHttpError.InternalServerError("خطای سروری");
-      const fileId = fileDetailes._id;
-      await ProductModel.updateOne({_id: createProduct._id}, {file_Id: fileId});
+      // const fileId = fileDetailes._id;
+      // await ProductModel.updateOne({_id: createProduct._id}, {file_Id: fileId});
       //  ------------- count product categhory ------------------------
       await createCounterCategory(ProductCategoryModel, createProduct.product_category_Id);
       // ----------------- create brand ------------------------
@@ -105,7 +110,6 @@ class ProductController extends Controller{
       const brandProductCategory = await BrandProductCategoryModel.findOne({productCategory_Id: createProduct.product_category_Id, brand_Id: createProduct.brand_Id});
       if(brandProductCategory){
         let count = brandProductCategory.count;
-        console.log(count);
         await BrandProductCategoryModel.updateOne(
           {
             _id: brandProductCategory._id
@@ -140,6 +144,47 @@ class ProductController extends Controller{
       next(error)
     }
   };
+  async createProductGallery(req, res, next){
+    try {
+      const { id } = req.params;
+      const checkId = await checkExistOfModelById(id, ProductModel);
+      const requestData = copyObject(req.body);
+      console.log(req.body);
+      const fileId = await FileModel.findOne({type_Id: checkId._id});
+      // if(requestData.fileUploadPath && requestData.filename){
+        const files = listOfImageFromRequest(req.files.images || [], requestData.fileUploadPath);
+        const orginalName = getFileOrginalname(req.files['images']);
+        const fileEncoding = getFileEncoding(req.files['images']);
+        const mimeType = getFileMimetype(req.files['images']);
+        const fileName = getFileFilename(req.files['images']);
+        const fileSize = getFileSize(req.files['images']);
+        const updateTime = convertGregorianDateToPersionDateToToday();
+        deleteFileInPathArray(fileId.files);
+        const updateResault = await FileModel.updateOne(
+          {
+            _id: fileId._id
+          }, 
+          {
+            files, 
+            originalnames: orginalName, 
+            encoding: fileEncoding,
+            mimetype: mimeType,
+            filename: fileName, 
+            size: fileSize,
+            updatedAt: updateTime
+          });
+      // }
+      if(!updateResault) throw new createHttpError.InternalServerError("خطای سروری");
+      return res.status(httpStatus.OK).json({
+        statusCode: httpStatus.OK,
+        data: {
+          message: "گالری تصاویر محصول با موفقیت ثبت شد"
+        }
+      });
+    } catch (error) {
+      next(error)
+    }
+  }
   async listOfProduct(req, res, next){
     try {
       const { search } = req.query;
@@ -238,11 +283,23 @@ class ProductController extends Controller{
       next(error)
     }
   };
-  async listOfProductByCategory(req, res, next){
-    try {
+  async listOfProductByCategory(req, res, next){    try {
       const { categoryName } = req.query;
       const productCategory = await ProductCategoryModel.findOne({title: categoryName});
-      const listOfProduct = await ProductModel.find({product_category_Id: productCategory._id}).populate([
+      const listOfProduct = await ProductModel.find(
+        {
+          product_category_Id: productCategory._id
+        },
+        {
+          title: 1, 
+          product_category_Id: 1, 
+          price: 1, 
+          stock: 1, 
+          status: 1, 
+          Product_Type_Id: 0, 
+          brand_Id: 0, 
+          brand_productCat_Id: 0
+        }).populate([
         {path: "file_Id", select: {files: 1}},
         {path: "product_category_Id", select: {title: 1}},
         {path: "Product_Type_Id", select: {type_name: 1}},

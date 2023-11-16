@@ -18,6 +18,7 @@ const { AdminApiRoleRoutes } = require("./Role.Routes");
 const { AdmonApiRolePermissionRoutes } = require("./Role_Permissioin.Routes");
 const { AdminApiUserRoutes } = require("./User.Routes");
 const { AdminApiVariationRoutes } = require("./Variation.Routes");
+const { AdminApiVariationCategoryRoutes } = require("./VariationCategory.Routes");
 const { AdminApiVariationOptionsRoutes } = require("./VariationOption.Routes");
 const router = require("express").Router();
 
@@ -49,6 +50,10 @@ router.use("/variation_option", checkPermission(
     [
         PERMISSIONS.ADMIN
     ]), AdminApiVariationOptionsRoutes);
+router.use("/variation_category", checkPermission(
+    [
+        PERMISSIONS.ADMIN
+    ]), AdminApiVariationCategoryRoutes);
 router.use("/productConfig_Advance", checkPermission(
     [
         PERMISSIONS.ADMIN
@@ -61,7 +66,7 @@ router.use("/offer_name", checkPermission(
     [
         PERMISSIONS.ADMIN
     ]), AdminApiOfferNameRoutes);
-router.use("/brand", checkPermission(
+router.use("/brand", checkPermission( 
     [
         PERMISSIONS.ADMIN
     ]), AdminApiBrandRoutes);

@@ -9,6 +9,7 @@ const { AllRoutes } = require("./Routers/Router");
 const UserAgent = require("express-useragent");
 const cors = require("cors");
 const morgan = require("morgan");
+const bodyParser = require("body-parser");
 // const cookie_Session = require("cookie-session"); // fffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 // const passport = require("passport"); // fffffffffffffffffffffffffffffffffffffffffffffffffffff
 // const passportSetup = require("./Http/Middleware/Passport")
@@ -24,16 +25,18 @@ module.exports = class Application{
         this.initConfigRedis();
         this.conectedMongoDb();
         this.createServer();
-        this.createRoute();
+        this.createRoute(); 
         this.errorHandler();
     }
     configApplication(){
         this.#app.use(express.json());
-        this.#app.use(express.urlencoded({extended: true}));
+        this.#app.use(express.urlencoded({extended: false}));
+        this.#app.use(bodyParser.urlencoded({extended: true})); 
+        this.#app.use(bodyParser.json());
         this.#app.use(express.static(path.join(__dirname, "..", "Public")));
         this.#app.use(cors());
         this.#app.use(morgan("dev"));
-        this.#app.use(UserAgent.express());
+        this.#app.use(UserAgent.express()); 
 
         // this.#app.use(cookie_Session({    // fffffffffffffffffffffffffffffffffffffffffffff
             // name: "session",
