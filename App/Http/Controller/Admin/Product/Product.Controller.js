@@ -201,14 +201,11 @@ class ProductController extends Controller{
             product_category_Id: 1, 
             price: 1, 
             stock: 1, 
-            status: 1, 
-            Product_Type_Id: 0, 
+            publication_status: 1,  
             brand_Id: 0, 
             brand_productCat_Id: 0,
           }).populate([
-            {path: "file_Id", select: {files: 1}},
             {path: "product_category_Id", select: {title: 1}},
-            {path: "Product_Type_Id", select: {type_name: 1}},
             {path: "brand_Id", select: {title: 1}},
             {path: "brand_productCat_Id", select: {title: 1}}
           ]);
@@ -219,57 +216,24 @@ class ProductController extends Controller{
             }
           }).count();
       } else {
-        products = await ProductModel.find({}).populate([
-          {path: "file_Id", select: {files: 1}},
+        products = await ProductModel.find(
+          {
+
+          },
+          {
+            title: 1, 
+            product_category_Id: 1, 
+            price: 1, 
+            stock: 1, 
+            publication_status: 1,  
+            brand_Id: 0, 
+            brand_productCat_Id: 0,
+          }).populate([
           {path: "product_category_Id", select: {title: 1}},
-          {path: "Product_Type_Id", select: {type_name: 1}},
           {path: "brand_Id", select: {title: 1}},
           {path: "brand_productCat_Id", select: {title: 1}}
         ]);
         numberOfResault = await ProductModel.find({}).count();
-        // products = await ProductModel.aggregate([
-        //   {
-        //     $match: {}
-        //   },
-        //   {
-        //     $lookup: {
-        //       from: "product_categories",
-        //       localField: "product_category_Id",
-        //       foreignField: "_id",
-        //       as: "product_category_Id"
-        //     }
-        //   },
-        //   {$unwind: "$product_category_Id"},
-        //   {
-        //     $lookup: {
-        //       from: "brands",
-        //       localField: "brand_Id",
-        //       foreignField: "_id",
-        //       as: "brand_Id"
-        //     }
-        //   },
-        //   {
-        //     $lookup: {
-        //       from: "brand_productCategories",
-        //       localField: "brand_productCat_Id",
-        //       foreignField: "_id",
-        //       as: "brand_productCat_Id"
-        //     }
-        //   },
-        //   {
-        //     $lookup: {
-        //       from: "files",
-        //       localField: "file_Id",
-        //       foreignField: "_id",
-        //       as: "file_Id"
-        //     }
-        //   },
-        //   {
-        //     $project: {
-        //       "__v": 0
-        //     }
-        //   }
-        // ]);
       }
       if(!products) throw new createHttpError.NotFound("محصولی یافت نشد");
       return res.status(httpStatus.OK).json({
@@ -283,7 +247,8 @@ class ProductController extends Controller{
       next(error)
     }
   };
-  async listOfProductByCategory(req, res, next){    try {
+  async listOfProductByCategory(req, res, next){    
+    try {
       const { categoryName } = req.query;
       const productCategory = await ProductCategoryModel.findOne({title: categoryName});
       const listOfProduct = await ProductModel.find(
@@ -295,21 +260,16 @@ class ProductController extends Controller{
           product_category_Id: 1, 
           price: 1, 
           stock: 1, 
-          status: 1, 
-          Product_Type_Id: 0, 
+          publication_status: 1, 
           brand_Id: 0, 
           brand_productCat_Id: 0
         }).populate([
-        {path: "file_Id", select: {files: 1}},
         {path: "product_category_Id", select: {title: 1}},
-        {path: "Product_Type_Id", select: {type_name: 1}},
         {path: "brand_Id", select: {title: 1}},
         {path: "brand_productCat_Id", select: {title: 1}}
       ]);
       const numberOfresault = await ProductModel.find({product_category_Id: productCategory._id}).populate([
-        {path: "file_Id", select: {files: 1}},
         {path: "product_category_Id", select: {title: 1}},
-        {path: "Product_Type_Id", select: {type_name: 1}},
         {path: "brand_Id", select: {title: 1}},
         {path: "brand_productCat_Id", select: {title: 1}}
       ]).count();
@@ -330,9 +290,7 @@ class ProductController extends Controller{
       const { id } = req.params;
       const product = await checkExistOfModelById(id, ProductModel);
       const listOfProduct = await ProductModel.findOne({_id: product._id}).populate([
-        {path: "file_Id", select: {files: 1}},
         {path: "product_category_Id", select: {title: 1}},
-        {path: "Product_Type_Id", select: {type_name: 1}},
         {path: "brand_Id", select: {title: 1}},
         {path: "brand_productCat_Id", select: {title: 1}}
       ]);
@@ -347,56 +305,18 @@ class ProductController extends Controller{
       next(error)
     }
   };
-  async listOfProductByProductType(req, res, next){
-    try {
-      const { productTypeId } = req.params;
-      const product = await checkExistOfModelById(productTypeId, ProductTypeModel);
-      const listOfProduct = await ProductModel.find({Product_Type_Id: product._id}).populate([
-        {path: "file_Id", select: {files: 1}},
-        {path: "product_category_Id", select: {title: 1}},
-        {path: "Product_Type_Id", select: {type_name: 1}},
-        {path: "brand_Id", select: {title: 1}},
-        {path: "brand_productCat_Id", select: {title: 1}}
-      ]);
-      if(!listOfProduct) throw new createHttpError.NotFound("محصولی یافت نشد");
-      return res.status(httpStatus.OK).json({
-        statusCode: httpStatus.OK,
-        data: {
-          products: listOfProduct
-        }
-      })
-
-    } catch (error) {
-      next(error)
-    }
-  };
-  async listOfProductByProducer(req, res, next){
-    try {
-      const { producer } = req.params;
-      const product = await ProductModel.find({producer}).populate([
-        {path: "file_Id", select: {files: 1}},
-        {path: "product_category_Id", select: {title: 1}},
-        {path: "Product_Type_Id", select: {type_name: 1}},
-        {path: "brand_Id", select: {title: 1}},
-        {path: "brand_productCat_Id", select: {title: 1}}
-      ]);
-      if(!product) throw new createHttpError.NotFound("محصولی یافت نشد");
-      return res.status(httpStatus.OK).json({
-        statusCode: httpStatus.OK,
-        data: {
-          products: product
-        }
-      })
-    } catch (error) {
-      next(error)
-    }
-  };
   async listOfProductByActive(req, res, next){
     try {
-      const product = await ProductModel.find({active: true}).populate([
-        {path: "file_Id", select: {files: 1}},
+      const product = await ProductModel.find({publication_status: true}, {
+        title: 1, 
+        product_category_Id: 1, 
+        price: 1, 
+        stock: 1, 
+        publication_status: 1,  
+        brand_Id: 0, 
+        brand_productCat_Id: 0,
+      }).populate([
         {path: "product_category_Id", select: {title: 1}},
-        {path: "Product_Type_Id", select: {type_name: 1}},
         {path: "brand_Id", select: {title: 1}},
         {path: "brand_productCat_Id", select: {title: 1}}
       ]);
@@ -413,10 +333,16 @@ class ProductController extends Controller{
   };
   async listOfProductByNotActive(req, res, next){
     try {
-      const product = await ProductModel.find({active: false}).populate([
-        {path: "file_Id", select: {files: 1}},
+      const product = await ProductModel.find({publication_status: false}, {
+        title: 1, 
+        product_category_Id: 1, 
+        price: 1, 
+        stock: 1, 
+        publication_status: 1,  
+        brand_Id: 0, 
+        brand_productCat_Id: 0,
+      }).populate([
         {path: "product_category_Id", select: {title: 1}},
-        {path: "Product_Type_Id", select: {type_name: 1}},
         {path: "brand_Id", select: {title: 1}},
         {path: "brand_productCat_Id", select: {title: 1}}
       ]);
@@ -435,27 +361,30 @@ class ProductController extends Controller{
     try {
       const { id } = req.params;
       const product = await checkExistOfModelById(id, ProductModel);
+      let updateTime = convertGregorianDateToPersionDateToToday();
       const dataBody = copyObject(req.body);
       const fileId = await FileModel.findOne({type_Id: product._id});
       if(dataBody.fileUploadPath && dataBody.filename){
-        const files = listOfImageFromRequest(req.files.images || [], dataBody.fileUploadPath);
-        const orginalName = getFileOrginalname(req.files['images']);
-        const fileEncoding = getFileEncoding(req.files['images']);
-        const mimeType = getFileMimetype(req.files['images']);
-        const fileName = getFileFilename(req.files['images']);
-        const fileSize = getFileSize(req.files['images']);
+        const file_refrence = listOfImageFromRequest(req.files.image || [], dataBody.fileUploadPath);
+        const orginalName = getFileOrginalname(req.files['image']);
+        const fileEncoding = getFileEncoding(req.files['image']);
+        const mimeType = getFileMimetype(req.files['image']);
+        const fileName = getFileFilename(req.files['image']);
+        const fileSize = getFileSize(req.files['image']);
+        let updatedTime = convertGregorianDateToPersionDateToToday();
         deleteFileInPathArray(fileId.files);
         await FileModel.updateOne(
           {
-            _id: fileId._id
+            _id: fileId._id 
           }, 
           {
-            files, 
+            file_refrence, 
             originalnames: orginalName, 
             encoding: fileEncoding,
             mimetype: mimeType,
             filename: fileName, 
-            size: fileSize
+            size: fileSize,
+            updatedAt: updatedTime
           });
       }
       let blackFeildList = Object.values(productBlackList);
@@ -463,16 +392,51 @@ class ProductController extends Controller{
       if(dataBody.product_category_Id){
         updateCounterCategory(ProductCategoryModel, product.product_category_Id, dataBody.product_category_Id);
       }
-      // if(dataBody.brand_Id){ 
-      //   updateCounterCategory(BrandModel, product.brand_Id, dataBody.brand_Id);
-      //   // createCounterCategory(BrandProductCategoryModel, product.brand_productCat_Id); 
-      // }
-      const updateResault = await ProductModel.updateOne({_id: product._id}, {$set: dataBody});
+      const updateResault = await ProductModel.updateOne({_id: product._id}, {$set: dataBody, updatedAt: updateTime});
       if(updateResault.modifiedCount == 0) throw new createHttpError.InternalServerError("خطای سروری");
       return res.status(httpStatus.OK).json({
         statusCode: httpStatus.OK,
         data: {
           message: "به روز رسانی محصول با موفقیت انجام شد" 
+        }
+      })
+
+    } catch (error) {
+      next(error)
+    }
+  };
+  async updateProductByGallery(req, res, next){
+    try {
+      const { id } = req.params;
+      const product = await checkExistOfModelById(id, ProductModel);
+      const dataBody = copyObject(req.body);
+      const fileId = await FileModel.findOne({type_Id: product._id});
+      const files = listOfImageFromRequest(req.files.images || [], dataBody.fileUploadPath);
+      const orginalName = getFileOrginalname(req.files['images']);
+      const fileEncoding = getFileEncoding(req.files['images']);
+      const mimeType = getFileMimetype(req.files['images']);
+      const fileName = getFileFilename(req.files['images']);
+      const fileSize = getFileSize(req.files['images']);
+      let updatedTime = convertGregorianDateToPersionDateToToday();
+      deleteFileInPathArray(fileId.files);
+      const updateResault = await FileModel.updateOne( 
+        {
+          _id: fileId._id 
+        }, 
+        {
+          files, 
+          originalnames: orginalName, 
+          encoding: fileEncoding,
+          mimetype: mimeType,
+          filename: fileName, 
+          size: fileSize,
+          updatedAt: updatedTime
+        });
+      if(updateResault.modifiedCount == 0) throw new createHttpError.InternalServerError("خطای سروری");
+      return res.status(httpStatus.OK).json({
+        statusCode: httpStatus.OK,
+        data: {
+          message: "به روز رسانی  گالری محصول با موفقیت انجام شد" 
         }
       })
 
