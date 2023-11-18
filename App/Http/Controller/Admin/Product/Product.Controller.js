@@ -22,7 +22,6 @@ const Controller = require("../../Controller");
 const { ProductCategoryModel } = require("../../../../Models/Product_Category.Model");
 const { StatusCodes: httpStatus } = require("http-status-codes");
 const { FileModel } = require("../../../../Models/Files.Model");
-const { ProductTypeModel } = require("../../../../Models/Product_Type.Model");
 const { BrandProductCategoryModel } = require("../../../../Models/Brand_ProductCategory.Model");
 const { BrandModel } = require("../../../../Models/Brand.Model");
 const productBlackList = {
