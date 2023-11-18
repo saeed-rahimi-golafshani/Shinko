@@ -1,4 +1,5 @@
 const { default: mongoose } = require("mongoose");
+const { COUPEN_STATUS } = require("../Utills/Constants");
 
 const CoupenSchema = new mongoose.Schema({
     coupen_code: {type: String, required: true},
@@ -15,7 +16,8 @@ const CoupenSchema = new mongoose.Schema({
     number_uses_user: {type: Number, required: true},
     first_order: {type: Boolean, default: false},
     createdAt: {type: String},
-    updatedAt: {type: String}
+    updatedAt: {type: String},
+    status: {type: String, default: COUPEN_STATUS.UNACTIVE}
 });
 
 module.exports = {

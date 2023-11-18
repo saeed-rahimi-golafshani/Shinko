@@ -26,6 +26,12 @@ module.exports = {
         MALE: "مرد",
         FEMALE:  "زن"
     }),
+    COUPEN_STATUS: Object.freeze({
+        ALL: "همه",
+        ACTIVE: "فعال",
+        UNACTIVE: "فعال نشده",
+        EXPIRED: "منقضی شده"
+    }),
     PERMISSIONS: Object.freeze(
         {
             SUPER_ADMIN: "all",
