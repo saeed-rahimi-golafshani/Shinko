@@ -6,7 +6,7 @@ const CoupenSchema = new mongoose.Schema({
     title: {type: String},
     percent_discount: {type: Number, required: true},
     max_discount_amount: {type: Number, required: true},
-    min_shopping_cart_amount: {type: Number, required: true},
+    min_shoppingcart_amount: {type: Number, required: true},
     product_category_Id: {type: mongoose.Types.ObjectId, ref: "product_category"},
     product_Id: {type: mongoose.Types.ObjectId, ref: "product"},
     user_Id: {type: mongoose.Types.ObjectId, ref: "user"},

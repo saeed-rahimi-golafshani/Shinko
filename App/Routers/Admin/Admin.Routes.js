@@ -3,6 +3,7 @@ const { PERMISSIONS } = require("../../Utills/Constants");
 const { AdminApiBlogCategoryRoutes } = require("./BlogCategoryRoutes");
 const { AdminApiBlogRoutes } = require("./BlogRoutes");
 const { AdminApiBrandRoutes } = require("./Brand.Routes");
+const { AdminApiCoupenRoutes } = require("./Coupen.Routes");
 const { AdminApiCourseRoutes } = require("./Course.Routes");
 const { AdminApiCourseStatusRoutes } = require("./CourseStatus.Routes");
 const { AdminApiCourseTypeRoutes } = require("./CourseType.Routes");
@@ -102,6 +103,10 @@ router.use("/users", checkPermission(
     [
         PERMISSIONS.SUPER_ADMIN
     ]), AdminApiUserRoutes);
+router.use("/coupen", checkPermission(
+    [
+        PERMISSIONS.SUPER_ADMIN
+    ]), AdminApiCoupenRoutes);
 
 module.exports = {
     AdminApiRoutes: router
