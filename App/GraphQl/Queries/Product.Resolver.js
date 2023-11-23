@@ -13,7 +13,6 @@ const listOfProductResolver = {
   type: new GraphQLList(ProductType),
   resolve: async () =>{
     const product = await ProductModel.find({}).populate([
-      {path: "file_Id", select: {files: 1}},
       {path: "product_category_Id", select: {title: 1}},
       {path: "brand_Id", select: {title: 1}},
       {path: "brand_productCat_Id", select: {title: 1}}

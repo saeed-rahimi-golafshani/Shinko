@@ -1,4 +1,6 @@
 const { default: mongoose } = require("mongoose");
+// const slug = require("mongoose-slug-generator");
+// mongoose.plugin(slug);
 
 const ProductSchema = new mongoose.Schema({
     title: {type: String, required: true},
@@ -18,7 +20,8 @@ const ProductSchema = new mongoose.Schema({
     publication_status: {type: Boolean, default: false},
     stock: {type: Number, default: 0},
     createdAt: {type: String},
-    updatedAt: {type: String}
+    updatedAt: {type: String},
+    slug: {type: String, required: true},
 }, {
     toJSON: {virtuals: true}
 });

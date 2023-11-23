@@ -59,6 +59,7 @@ class ProductController extends Controller{
       const price = discountOFPrice(main_price, discount);
       let createTime = convertGregorianDateToPersionDateToToday();
       let updateTime = convertGregorianDateToPersionDateToToday();
+      const slug = (title.split(" ").toString()).replace(/,/g, "-");
       const createProduct = await ProductModel.create({
         title,
         en_title,
@@ -76,7 +77,8 @@ class ProductController extends Controller{
         publication_date,
         publication_status,
         createdAt: createTime,
-        updatedAt: updateTime
+        updatedAt: updateTime,
+        slug
       });
       if(!createProduct) throw new createHttpError.InternalServerError("خطای سروری");
       // ----------------------- file model ------------------ 
@@ -99,8 +101,6 @@ class ProductController extends Controller{
         updatedAt: updateTime
       });
       if(!fileDetailes) throw new createHttpError.InternalServerError("خطای سروری");
-      // const fileId = fileDetailes._id;
-      // await ProductModel.updateOne({_id: createProduct._id}, {file_Id: fileId});
       //  ------------- count product categhory ------------------------
       await createCounterCategory(ProductCategoryModel, createProduct.product_category_Id);
       // ----------------- create brand ------------------------
@@ -286,9 +286,9 @@ class ProductController extends Controller{
   };
   async listOfProductById(req, res, next){
     try {
-      const { id } = req.params;
+      const { id, slug } = req.params;
       const product = await checkExistOfModelById(id, ProductModel);
-      const listOfProduct = await ProductModel.findOne({_id: product._id}).populate([
+      const listOfProduct = await ProductModel.findOne({_id: product._id, slug}).populate([
         {path: "product_category_Id", select: {title: 1}},
         {path: "brand_Id", select: {title: 1}},
         {path: "brand_productCat_Id", select: {title: 1}}

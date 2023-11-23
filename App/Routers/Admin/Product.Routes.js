@@ -9,7 +9,7 @@ router.post("/create",
   stringToArray("tags"), ProductController.createProduct);
 router.patch("/gallery/:id", uploadFile("Products").fields([{name: "images", maxCount: 10}]), ProductController.createProductGallery);
 router.get("/list", ProductController.listOfProduct);
-router.get("/list/:id", ProductController.listOfProductById);
+router.get("/list/:id/:slug", ProductController.listOfProductById);
 router.get("/list_of_category", ProductController.listOfProductByCategory);
 router.get("/list_of_active", ProductController.listOfProductByActive);
 router.get("/list_of_not_active", ProductController.listOfProductByNotActive);
